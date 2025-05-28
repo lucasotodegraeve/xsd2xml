@@ -216,7 +216,7 @@ def random_duration() -> str:
         ]
     )
 
-    sign = random.choice(["+", "-", ""])
+    sign = random.choice(["-", ""])
     years_str = random.choice([f"{years}Y", "0Y", ""])
     months_str = random.choice([f"{months}M", "0M", ""])
     days_str = random.choice([f"{days}D", "0D", ""])
