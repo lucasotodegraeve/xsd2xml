@@ -1,4 +1,7 @@
 ns = {"xsd": "http://www.w3.org/2001/XMLSchema"}
 
 
+class CallerError(Exception): ...
+
+
 class InvalidXSDError(Exception): ...

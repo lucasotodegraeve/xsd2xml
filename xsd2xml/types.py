@@ -1,6 +1,19 @@
 from enum import Enum
 import random
 import string
+from dataclasses import dataclass
+
+from lxml.etree import _Element  # type: ignore
+
+
+@dataclass
+class ComplexType:
+    root: _Element
+
+
+@dataclass
+class SimpleType:
+    root: _Element
 
 
 class BuiltInType(str, Enum):
@@ -53,7 +66,7 @@ class BuiltInType(str, Enum):
     positiveinteger = "xsd:positiveInteger"
 
 
-def generate_build_in_type(type: BuiltInType) -> str:
+def random_build_in_type(type: BuiltInType) -> str:
     match type:
         # Primitive types
         case BuiltInType.string:

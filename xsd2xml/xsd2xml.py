@@ -1,12 +1,11 @@
 from enum import Enum
-import typing
 import random
 
 from lxml import etree
 from lxml.etree import _Element, _ElementTree  # type: ignore
 
-from xsd2xml.types import BuiltInType, generate_build_in_type  # type: ignore
-from xsd2xml.utils import ns, InvalidXSDError
+from xsd2xml.types import BuiltInType, ComplexType, SimpleType, random_build_in_type
+from xsd2xml.utils import CallerError, ns, InvalidXSDError
 
 
 class XSD(str, Enum):
@@ -30,95 +29,112 @@ def generate(xsd_path: str, element_name: str) -> _ElementTree:
     if xsd_element is None:
         raise ValueError()
 
-    instantiated_element = _instantiate_element(xsd_root, xsd_element)
-    return etree.ElementTree(next(iter(instantiated_element)))
+    created_element = _instantiate_element(xsd_root, xsd_element)
+    return etree.ElementTree(next(iter(created_element)))
 
 
-def _instantiate_element(
-    xsd_root: _Element, element_to_instantiate: _Element
-) -> list[_Element]:
-    min_occurs = element_to_instantiate.get("minOccurs")
-    min_occurs = min_occurs if min_occurs else 1
-
-    max_occurs = element_to_instantiate.get("maxOccurs")
-    max_occurs = max_occurs if max_occurs else 1
-    max_occurs = 5 if max_occurs == "unbounded" else max_occurs
-
-    random_occurs = random.randint(int(min_occurs), int(max_occurs))
-
-    ref = element_to_instantiate.get("ref")
+def _try_resolve_reference(xsd_root: _Element, xsd_element: _Element) -> _Element:
+    ref = xsd_element.get("ref")
     if ref is not None:
         ref_element = xsd_root.find(f"xsd:element[@name='{ref}']", namespaces=ns)
         if ref_element is None:
             raise InvalidXSDError()
-        element_to_instantiate = ref_element
+        return ref_element
 
-    name = element_to_instantiate.get("name")
-    if name is None:
-        raise InvalidXSDError()
+    return xsd_element
 
-    result: list[_Element] = []
-    type = element_to_instantiate.get("type")
+
+def _get_random_occurs(xsd_element: _Element) -> int:
+    min_occurs = xsd_element.get("minOccurs")
+    min_occurs = min_occurs if min_occurs else 1
+
+    max_occurs = xsd_element.get("maxOccurs")
+    max_occurs = max_occurs if max_occurs else 1
+    max_occurs = 5 if max_occurs == "unbounded" else max_occurs
+
+    return random.randint(int(min_occurs), int(max_occurs))
+
+
+def _find_type_definition(
+    xsd_root: _Element, xsd_element: _Element
+) -> SimpleType | ComplexType | BuiltInType:
+    type = xsd_element.get("type")
     if type in BuiltInType:
-        for _ in range(random_occurs):
-            curr_element = etree.Element(name)
-            _populate_build_in_element(curr_element, typing.cast(BuiltInType, type))
-            result.append(curr_element)
-        return result
+        return BuiltInType(type)
 
     if type is None:
-        inline_types = list(
-            element_to_instantiate.iterchildren(XSD.complex_type, XSD.simple_type)
+        inline_type_def = next(
+            xsd_element.iterchildren(XSD.complex_type, XSD.simple_type)
         )
-        if len(inline_types) != 1:
-            raise InvalidXSDError()
-        xsd_type_element = inline_types[0]
-    else:
-        simple_type = xsd_root.find(f"xsd:simpleType[@name='{type}']", namespaces=ns)
-        complex_type = xsd_root.find(f"xsd:complexType[@name='{type}']", namespaces=ns)
-        if simple_type is None and complex_type is None:
-            raise InvalidXSDError()
-        xsd_type_element = typing.cast(_Element, simple_type or complex_type)
-
-    for _ in range(random_occurs):
-        curr_element = etree.Element(name)
-        _populate_element(xsd_root, curr_element, xsd_type_element)
-        result.append(curr_element)
-    return result
-
-
-def _populate_element(
-    xsd_root: _Element, curr_element: _Element, type_to_instantiate: _Element
-):
-    match type_to_instantiate.tag:
-        case XSD.complex_type:
-            _populate_complex_type(xsd_root, curr_element, type_to_instantiate)
-            return curr_element
-        case XSD.simple_type:
-            raise NotImplementedError()
-        case _:
-            raise InvalidXSDError()
-
-
-def _populate_build_in_element(element: _Element, type: BuiltInType) -> None:
-    element.text = generate_build_in_type(type)
-
-
-def _populate_complex_type(
-    xsd_root: _Element, curr_element: _Element, complex_type: _Element
-) -> None:
-    for child_of_complex in complex_type.iterchildren():
-        match child_of_complex.tag:
-            case XSD.attribute:
-                _populate_attribute(curr_element, child_of_complex)
-            case XSD.sequence | XSD.choice | XSD.all:
-                result = _generate_indicator(xsd_root, child_of_complex)
-                curr_element.extend(result)
+        match inline_type_def.tag:
+            case XSD.complex_type:
+                return ComplexType(inline_type_def)
+            case XSD.simple_type:
+                return SimpleType(inline_type_def)
             case _:
-                raise NotImplementedError()
+                raise InvalidXSDError()
+
+    simple_type = xsd_root.find(f"xsd:simpleType[@name='{type}']", namespaces=ns)
+    if simple_type is not None:
+        return SimpleType(simple_type)
+
+    complex_type = xsd_root.find(f"xsd:complexType[@name='{type}']", namespaces=ns)
+    if complex_type is not None:
+        return ComplexType(complex_type)
+
+    raise InvalidXSDError()
 
 
-def _generate_indicator(xsd_root: _Element, indicator: _Element) -> list[_Element]:
+def _instantiate_element(xsd_root: _Element, xsd_element: _Element) -> list[_Element]:
+    xsd_element = _try_resolve_reference(xsd_root, xsd_element)
+    random_occurs = _get_random_occurs(xsd_element)
+    type_definition = _find_type_definition(xsd_root, xsd_element)
+
+    match type_definition:
+        case BuiltInType():
+            return [_create_build_in_element(xsd_element) for _ in range(random_occurs)]
+        case SimpleType():
+            raise NotImplementedError()
+        case ComplexType():
+            return [
+                _create_complex_element(xsd_root, xsd_element, type_definition.root)
+                for _ in range(random_occurs)
+            ]
+
+
+def _create_build_in_element(xsd_element: _Element) -> _Element:
+    name = xsd_element.get("name")
+    if name is None:
+        raise InvalidXSDError()
+    generated_element = etree.Element(name)
+    xsd_type = xsd_element.get("type")
+    if xsd_type is None or xsd_type not in BuiltInType:
+        raise CallerError()
+    generated_element.text = random_build_in_type(BuiltInType(xsd_type))
+    return generated_element
+
+
+def _create_complex_element(
+    xsd_root: _Element, xsd_element: _Element, complex_type: _Element
+) -> _Element:
+    element_name = xsd_element.get("name")
+    if element_name is None:
+        raise InvalidXSDError()
+
+    created_element = etree.Element(element_name)
+
+    for attribute_definition in complex_type.iterchildren(XSD.attribute):
+        name, value = _create_attribute(attribute_definition)
+        created_element.attrib[name] = value
+
+    indicator = next(complex_type.iterchildren(XSD.sequence, XSD.choice, XSD.all))
+    children = _recurse_indicator(xsd_root, indicator)
+    created_element.extend(children)
+
+    return created_element
+
+
+def _recurse_indicator(xsd_root: _Element, indicator: _Element) -> list[_Element]:
     result: list[_Element] = []
     match indicator.tag:
         case XSD.element:
@@ -126,13 +142,13 @@ def _generate_indicator(xsd_root: _Element, indicator: _Element) -> list[_Elemen
             return _instantiate_element(xsd_root, indicator)
         case XSD.sequence:
             for child in indicator.iterchildren():
-                result.extend(_generate_indicator(xsd_root, child))
+                result.extend(_recurse_indicator(xsd_root, child))
         case XSD.choice:
             choice = random.choice(list(indicator.iterchildren()))
-            result = _generate_indicator(xsd_root, choice)
+            result = _recurse_indicator(xsd_root, choice)
         case XSD.all:
             for child in indicator.iterchildren():
-                result.extend(_generate_indicator(xsd_root, child))
+                result.extend(_recurse_indicator(xsd_root, child))
             random.shuffle(result)
         case _:
             raise NotImplementedError()
@@ -140,15 +156,15 @@ def _generate_indicator(xsd_root: _Element, indicator: _Element) -> list[_Elemen
     return result
 
 
-def _populate_attribute(curr_element: _Element, attribute_element: _Element) -> None:
-    name = attribute_element.get("name")
-    type = attribute_element.get("type")
+def _create_attribute(attribute_definition: _Element) -> tuple[str, str]:
+    name = attribute_definition.get("name")
+    type = attribute_definition.get("type")
 
-    if type not in BuiltInType:
-        # TODO: could also be a simple type
-        raise InvalidXSDError("Attribute must have a simple type")
     if name is None:
-        raise InvalidXSDError("Attribute must have attrubute @name")
+        raise InvalidXSDError()
 
-    value = generate_build_in_type(typing.cast(BuiltInType, type))
-    curr_element.set(name, value)
+    if type in BuiltInType:
+        return name, random_build_in_type(BuiltInType(type))
+
+    # Simple type
+    raise NotImplementedError()
