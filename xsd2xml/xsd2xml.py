@@ -124,8 +124,7 @@ def _create_complex_element(
     created_element = etree.Element(element_name)
 
     for attribute_definition in complex_type.iterchildren(XSD.attribute):
-        name, value = _create_attribute(attribute_definition)
-        created_element.attrib[name] = value
+        _set_attribute(created_element, attribute_definition)
 
     indicator = next(complex_type.iterchildren(XSD.sequence, XSD.choice, XSD.all))
     children = _recurse_indicator(xsd_root, indicator)
@@ -156,15 +155,21 @@ def _recurse_indicator(xsd_root: _Element, indicator: _Element) -> list[_Element
     return result
 
 
-def _create_attribute(attribute_definition: _Element) -> tuple[str, str]:
+def _set_attribute(element: _Element, attribute_definition: _Element) -> None:
     name = attribute_definition.get("name")
     type = attribute_definition.get("type")
+    required = attribute_definition.get("use") == "required"
 
     if name is None:
         raise InvalidXSDError()
 
+    do_not_create = random.random() > 0.5
+    if not required and do_not_create:
+        return
+
     if type in BuiltInType:
-        return name, random_build_in_type(BuiltInType(type))
+        element.attrib[name] = random_build_in_type(BuiltInType(type))
+        return
 
     # Simple type
     raise NotImplementedError()
