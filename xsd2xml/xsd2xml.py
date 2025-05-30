@@ -5,7 +5,13 @@ from typing import Iterable
 from lxml import etree
 from lxml.etree import _Element, _ElementTree  # type: ignore
 
-from xsd2xml.types import BuiltInType, ComplexType, SimpleType, random_build_in_type
+from xsd2xml.types import (
+    BuiltInType,
+    ComplexType,
+    SimpleType,
+    random_build_in_type,
+    random_string,
+)
 from xsd2xml.utils import CallerError, ns, InvalidXSDError
 
 
@@ -14,6 +20,7 @@ class XSD(str, Enum):
     sequence = "{http://www.w3.org/2001/XMLSchema}sequence"
     choice = "{http://www.w3.org/2001/XMLSchema}choice"
     all = "{http://www.w3.org/2001/XMLSchema}all"
+    any = "{http://www.w3.org/2001/XMLSchema}any"
     attribute = "{http://www.w3.org/2001/XMLSchema}attribute"
     anyAttribute = "{http://www.w3.org/2001/XMLSchema}anyAttribute"
     complex_type = "{http://www.w3.org/2001/XMLSchema}complexType"
@@ -33,12 +40,22 @@ class XSD(str, Enum):
 def generate(xsd_path: str, element_name: str) -> _ElementTree:
     xsd_tree = etree.parse(xsd_path)
     xsd_root = xsd_tree.getroot()
+
+    if not isinstance(xsd_root, _Element):
+        raise ValueError()
+
     xsd_element = xsd_root.find(f"xsd:element[@name='{element_name}']", namespaces=ns)
     if xsd_element is None:
         raise ValueError()
 
     created_element = _instantiate_element(xsd_root, xsd_element)
-    return etree.ElementTree(next(iter(created_element)))
+    created_element = next(iter(created_element))
+
+    target_namespace = xsd_root.get("targetNamespace")
+    if target_namespace is not None:
+        created_element.attrib["xmlns"] = target_namespace
+
+    return etree.ElementTree(created_element)
 
 
 def _try_resolve_reference(xsd_root: _Element, element: _Element) -> _Element:
@@ -160,6 +177,8 @@ def _recurse_indicator(xsd_root: _Element, indicator: _Element) -> list[_Element
         case XSD.element:
             # Base condition
             return _instantiate_element(xsd_root, indicator)
+        case XSD.any:
+            return _create_any_element(indicator)
         case XSD.sequence:
             for child in iterchildren(indicator):
                 result.extend(_recurse_indicator(xsd_root, child))
@@ -304,3 +323,9 @@ def _get_attribute(element: _Element, attribute_name: str) -> str | None:
 
 def iterchildren(element: _Element) -> Iterable[_Element]:
     return filter(lambda el: not isinstance(el, etree._Comment), element.iterchildren())  # type: ignore
+
+
+def _create_any_element(xsd_any: _Element) -> list[_Element]:
+    # TODO: add something with a namespace
+    random_occurs = _get_random_occurs(xsd_any)
+    return [etree.Element(random_string()) for _ in range(random_occurs)]

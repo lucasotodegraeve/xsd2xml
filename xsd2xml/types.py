@@ -109,7 +109,7 @@ def random_build_in_type(type: BuiltInType) -> str:
         case BuiltInType.base64_binary:
             raise NotImplementedError()
         case BuiltInType.any_uri:
-            raise NotImplementedError()
+            return random_any_uri()
         case BuiltInType.q_name:
             raise NotImplementedError()
         case BuiltInType.notation:
@@ -133,7 +133,7 @@ def random_build_in_type(type: BuiltInType) -> str:
         case BuiltInType.id:
             return uuid4()
         case BuiltInType.idref:
-            raise NotImplementedError()
+            return uuid4()
         case BuiltInType.idrefs:
             raise NotImplementedError()
         case BuiltInType.entity:
@@ -261,3 +261,8 @@ def random_duration() -> str:
         duration,
     ]
     return random.choices(choices, weights=[1, 1, 1, 1, 10], k=1)[0]
+
+
+def random_any_uri() -> str:
+    # TODO: relative, fragments
+    return "https://www.example.com/"
