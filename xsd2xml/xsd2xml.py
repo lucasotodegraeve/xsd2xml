@@ -16,10 +16,16 @@ class XSD(str, Enum):
     attribute = "{http://www.w3.org/2001/XMLSchema}attribute"
     complex_type = "{http://www.w3.org/2001/XMLSchema}complexType"
     simple_type = "{http://www.w3.org/2001/XMLSchema}simpleType"
-    # simple_content
-    # complex_content
-    # attribute_group
-    # element_group
+    simple_content = "{http://www.w3.org/2001/XMLSchema}simpleContent"
+    complex_content = "{http://www.w3.org/2001/XMLSchema}complexContent"
+    attribute_group = "{http://www.w3.org/2001/XMLSchema}attributeGroup"
+    group = "{http://www.w3.org/2001/XMLSchema}group"
+    list = "{http://www.w3.org/2001/XMLSchema}list"
+    restriction = "{http://www.w3.org/2001/XMLSchema}restriction"
+    extension = "{http://www.w3.org/2001/XMLSchema}extension"
+    union = "{http://www.w3.org/2001/XMLSchema}union"
+    enumeration = "{http://www.w3.org/2001/XMLSchema}enumeration"
+    length = "{http://www.w3.org/2001/XMLSchema}length"
 
 
 def generate(xsd_path: str, element_name: str) -> _ElementTree:
@@ -123,12 +129,25 @@ def _create_complex_element(
 
     created_element = etree.Element(element_name)
 
+    # TODO: attribute is not allowed for simple content (and complex content)?
     for attribute_definition in complex_type.iterchildren(XSD.attribute):
         _set_attribute(created_element, attribute_definition)
 
-    indicator = next(complex_type.iterchildren(XSD.sequence, XSD.choice, XSD.all))
-    children = _recurse_indicator(xsd_root, indicator)
-    created_element.extend(children)
+    main_child = next(
+        filter(lambda el: el.tag != XSD.attribute, complex_type.iterchildren())
+    )
+
+    match main_child.tag:
+        case XSD.sequence | XSD.choice | XSD.all:
+            children = _recurse_indicator(xsd_root, main_child)
+            created_element.extend(children)
+        case XSD.simple_content:
+            _generate_simple_content(main_child)
+            raise NotImplementedError()
+        case XSD.complex_content:
+            raise NotImplementedError()
+        case _:
+            raise InvalidXSDError()
 
     return created_element
 
@@ -171,5 +190,60 @@ def _set_attribute(element: _Element, attribute_definition: _Element) -> None:
         element.attrib[name] = random_build_in_type(BuiltInType(type))
         return
 
-    # Simple type
-    raise NotImplementedError()
+    if type is not None:
+        # lookup simple type definition
+        raise NotImplementedError()
+
+    simple_type = next(attribute_definition.iterchildren(XSD.simple_type))
+    element.attrib[name] = _generate_simple_type(simple_type)
+
+
+def _generate_simple_type(simple_type: _Element) -> str:
+    child = next(simple_type.iterchildren())
+
+    match child.tag:
+        case XSD.list:
+            raise NotImplementedError()
+        case XSD.union:
+            raise NotImplementedError()
+        case XSD.restriction:
+            return _generate_restricted(child)
+        case _:
+            raise InvalidXSDError()
+
+
+def _generate_restricted(restriction: _Element) -> str:
+    base = restriction.get("base")
+    if base is None:
+        raise InvalidXSDError()
+
+    if base not in BuiltInType:
+        raise NotImplementedError()
+
+    # Assuming the enumerations are correct
+    enumerations = list(restriction.iterchildren(XSD.enumeration))
+    if len(enumerations) != 0:
+        enum_choice = random.choice(enumerations)
+        enum_value = enum_choice.get("value")
+        if enum_value is None:
+            raise InvalidXSDError()
+        return enum_value
+
+    base = BuiltInType(base)
+    match base:
+        case BuiltInType.string:
+            raise NotImplementedError()
+        case _:
+            raise NotImplementedError()
+
+
+def _generate_simple_content(simple_content: _Element) -> str:
+    child = next(simple_content.iterchildren())
+
+    match child.tag:
+        case XSD.restriction:
+            raise NotImplementedError()
+        case XSD.extension:
+            raise NotImplementedError()
+        case _:
+            raise InvalidXSDError()
