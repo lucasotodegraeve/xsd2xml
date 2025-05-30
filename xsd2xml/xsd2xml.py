@@ -1,5 +1,6 @@
 from enum import Enum
 import random
+from typing import Iterable
 
 from lxml import etree
 from lxml.etree import _Element, _ElementTree  # type: ignore
@@ -14,6 +15,7 @@ class XSD(str, Enum):
     choice = "{http://www.w3.org/2001/XMLSchema}choice"
     all = "{http://www.w3.org/2001/XMLSchema}all"
     attribute = "{http://www.w3.org/2001/XMLSchema}attribute"
+    anyAttribute = "{http://www.w3.org/2001/XMLSchema}anyAttribute"
     complex_type = "{http://www.w3.org/2001/XMLSchema}complexType"
     simple_type = "{http://www.w3.org/2001/XMLSchema}simpleType"
     simple_content = "{http://www.w3.org/2001/XMLSchema}simpleContent"
@@ -39,15 +41,16 @@ def generate(xsd_path: str, element_name: str) -> _ElementTree:
     return etree.ElementTree(next(iter(created_element)))
 
 
-def _try_resolve_reference(xsd_root: _Element, xsd_element: _Element) -> _Element:
-    ref = xsd_element.get("ref")
+def _try_resolve_reference(xsd_root: _Element, element: _Element) -> _Element:
+    ref = element.get("ref")
+    tag = element.tag
     if ref is not None:
-        ref_element = xsd_root.find(f"xsd:element[@name='{ref}']", namespaces=ns)
-        if ref_element is None:
+        referenced_element = xsd_root.find(f"{tag}[@name='{ref}']")
+        if referenced_element is None:
             raise InvalidXSDError()
-        return ref_element
+        return referenced_element
 
-    return xsd_element
+    return element
 
 
 def _get_random_occurs(xsd_element: _Element) -> int:
@@ -64,7 +67,7 @@ def _get_random_occurs(xsd_element: _Element) -> int:
 def _find_type_definition(
     xsd_root: _Element, xsd_element: _Element
 ) -> SimpleType | ComplexType | BuiltInType:
-    type = xsd_element.get("type")
+    type = _get_attribute(xsd_element, "type")
     if type in BuiltInType:
         return BuiltInType(type)
 
@@ -113,7 +116,7 @@ def _create_build_in_element(xsd_element: _Element) -> _Element:
     if name is None:
         raise InvalidXSDError()
     generated_element = etree.Element(name)
-    xsd_type = xsd_element.get("type")
+    xsd_type = _get_attribute(xsd_element, "type")
     if xsd_type is None or xsd_type not in BuiltInType:
         raise CallerError()
     generated_element.text = random_build_in_type(BuiltInType(xsd_type))
@@ -127,23 +130,22 @@ def _create_complex_element(
     if element_name is None:
         raise InvalidXSDError()
 
-    created_element = etree.Element(element_name)
-
-    # TODO: attribute is not allowed for simple content (and complex content)?
-    for attribute_definition in complex_type.iterchildren(XSD.attribute):
-        _set_attribute(created_element, attribute_definition)
-
+    # TODO: filter out comments
     main_child = next(
         filter(lambda el: el.tag != XSD.attribute, complex_type.iterchildren())
     )
-
     match main_child.tag:
         case XSD.sequence | XSD.choice | XSD.all:
+            created_element = etree.Element(element_name)
+            _set_attributes(
+                xsd_root, created_element, complex_type.iterchildren(XSD.attribute)
+            )
+
             children = _recurse_indicator(xsd_root, main_child)
             created_element.extend(children)
         case XSD.simple_content:
-            _generate_simple_content(main_child)
-            raise NotImplementedError()
+            created_element = etree.Element(element_name)
+            return _generate_simple_content(xsd_root, created_element, main_child)
         case XSD.complex_content:
             raise NotImplementedError()
         case _:
@@ -159,7 +161,7 @@ def _recurse_indicator(xsd_root: _Element, indicator: _Element) -> list[_Element
             # Base condition
             return _instantiate_element(xsd_root, indicator)
         case XSD.sequence:
-            for child in indicator.iterchildren():
+            for child in iterchildren(indicator):
                 result.extend(_recurse_indicator(xsd_root, child))
         case XSD.choice:
             choice = random.choice(list(indicator.iterchildren()))
@@ -174,28 +176,48 @@ def _recurse_indicator(xsd_root: _Element, indicator: _Element) -> list[_Element
     return result
 
 
-def _set_attribute(element: _Element, attribute_definition: _Element) -> None:
-    name = attribute_definition.get("name")
-    type = attribute_definition.get("type")
-    required = attribute_definition.get("use") == "required"
+def _set_attributes(
+    xsd_root: _Element,
+    created_element: _Element,
+    xsd_attribute_list: Iterable[_Element],
+) -> None:
+    for xsd_attribute in xsd_attribute_list:
+        xsd_attribute = _try_resolve_reference(xsd_root, xsd_attribute)
 
-    if name is None:
-        raise InvalidXSDError()
+        if xsd_attribute.tag == XSD.attribute_group:
+            xsd_attribute_group = _try_resolve_reference(xsd_root, xsd_attribute)
+            _set_attributes(
+                xsd_root, created_element, xsd_attribute_group.iterchildren()
+            )
 
-    do_not_create = random.random() > 0.5
-    if not required and do_not_create:
-        return
+        if xsd_attribute.tag == XSD.anyAttribute:
+            raise NotImplementedError()
 
-    if type in BuiltInType:
-        element.attrib[name] = random_build_in_type(BuiltInType(type))
-        return
+        name = _get_attribute(xsd_attribute, "name")
+        type = _get_attribute(xsd_attribute, "type")
 
-    if type is not None:
-        # lookup simple type definition
-        raise NotImplementedError()
+        required = xsd_attribute.get("use") == "required"
 
-    simple_type = next(attribute_definition.iterchildren(XSD.simple_type))
-    element.attrib[name] = _generate_simple_type(simple_type)
+        if name is None:
+            raise InvalidXSDError()
+
+        do_not_create = random.random() > 0.5
+        if not required and do_not_create:
+            continue
+
+        if type in BuiltInType:
+            created_element.attrib[name] = random_build_in_type(BuiltInType(type))
+            continue
+
+        is_type_user_defined = type is not None and type not in BuiltInType
+        if is_type_user_defined:
+            raise NotImplementedError()
+
+        is_type_anonymous = type is None
+        if is_type_anonymous:
+            simple_type = next(xsd_attribute.iterchildren(XSD.simple_type))
+            created_element.attrib[name] = _generate_simple_type(simple_type)
+            continue
 
 
 def _generate_simple_type(simple_type: _Element) -> str:
@@ -213,7 +235,7 @@ def _generate_simple_type(simple_type: _Element) -> str:
 
 
 def _generate_restricted(restriction: _Element) -> str:
-    base = restriction.get("base")
+    base = _get_attribute(restriction, "base")
     if base is None:
         raise InvalidXSDError()
 
@@ -237,13 +259,48 @@ def _generate_restricted(restriction: _Element) -> str:
             raise NotImplementedError()
 
 
-def _generate_simple_content(simple_content: _Element) -> str:
-    child = next(simple_content.iterchildren())
+def _generate_simple_content(
+    xsd_root: _Element, created_element: _Element, simple_content: _Element
+) -> _Element:
+    restriction_or_extension = next(simple_content.iterchildren())
+    base = _get_attribute(restriction_or_extension, "base")
+    if base is None:
+        raise InvalidXSDError()
 
-    match child.tag:
+    if base not in BuiltInType:
+        raise NotImplementedError()
+    base = BuiltInType(base)
+
+    match restriction_or_extension.tag:
         case XSD.restriction:
             raise NotImplementedError()
         case XSD.extension:
-            raise NotImplementedError()
+            created_element.text = random_build_in_type(base)
+            _set_attributes(
+                xsd_root,
+                created_element,
+                restriction_or_extension.iterchildren(XSD.attribute),
+            )
+            return created_element
         case _:
             raise InvalidXSDError()
+
+
+def _expand_qname(qname: str | None, nsmap: dict[str | None, str]) -> str | None:
+    if qname is None:
+        return None
+    if ":" not in qname:
+        return qname
+    if "{" == next(iter(qname), None):
+        return None
+    idx = qname.find(":")
+    return "{" + nsmap[qname[:idx]] + "}" + qname[idx + 1 :]
+
+
+def _get_attribute(element: _Element, attribute_name: str) -> str | None:
+    attribute_value = element.get(attribute_name)
+    return _expand_qname(attribute_value, element.nsmap)
+
+
+def iterchildren(element: _Element) -> Iterable[_Element]:
+    return filter(lambda el: not isinstance(el, etree._Comment), element.iterchildren())  # type: ignore
