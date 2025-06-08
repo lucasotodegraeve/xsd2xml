@@ -6,64 +6,55 @@ from uuid import UUID
 
 from xml.etree.ElementTree import Element
 
-@dataclass
-class ComplexType:
-    root: Element
-
-
-@dataclass
-class SimpleType:
-    root: Element
-
 
 class BuiltInType(str, Enum):
     # https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
-    string = "{http://www.w3.org/2001/XMLSchema}string"
-    boolean = "{http://www.w3.org/2001/XMLSchema}boolean"
-    decimal = "{http://www.w3.org/2001/XMLSchema}decimal"
-    float = "{http://www.w3.org/2001/XMLSchema}float"
-    double = "{http://www.w3.org/2001/XMLSchema}double"
-    duration = "{http://www.w3.org/2001/XMLSchema}duration"
-    date_time = "{http://www.w3.org/2001/XMLSchema}dateTime"
-    time = "{http://www.w3.org/2001/XMLSchema}time"
-    date = "{http://www.w3.org/2001/XMLSchema}date"
-    g_year_month = "{http://www.w3.org/2001/XMLSchema}gYearMonth"
-    g_year = "{http://www.w3.org/2001/XMLSchema}gYear"
-    g_month_day = "{http://www.w3.org/2001/XMLSchema}gMonthDay"
-    g_day = "{http://www.w3.org/2001/XMLSchema}gDay"
-    g_month = "{http://www.w3.org/2001/XMLSchema}gMonth"
-    hex_binary = "{http://www.w3.org/2001/XMLSchema}hexBinary"
-    base64_binary = "{http://www.w3.org/2001/XMLSchema}base64Binary"
-    any_uri = "{http://www.w3.org/2001/XMLSchema}anyURI"
-    q_name = "{http://www.w3.org/2001/XMLSchema}QName"
-    notation = "{http://www.w3.org/2001/XMLSchema}NOTATION"
+    string = "xsd:string"
+    boolean = "xsd:boolean"
+    decimal = "xsd:decimal"
+    float = "xsd:float"
+    double = "xsd:double"
+    duration = "xsd:duration"
+    date_time = "xsd:dateTime"
+    time = "xsd:time"
+    date = "xsd:date"
+    g_year_month = "xsd:gYearMonth"
+    g_year = "xsd:gYear"
+    g_month_day = "xsd:gMonthDay"
+    g_day = "xsd:gDay"
+    g_month = "xsd:gMonth"
+    hex_binary = "xsd:hexBinary"
+    base64_binary = "xsd:base64Binary"
+    any_uri = "xsd:anyURI"
+    q_name = "xsd:QName"
+    notation = "xsd:NOTATION"
 
     # https://www.w3.org/TR/xmlschema-2/#built-in-derived
-    normalizedstring = "{http://www.w3.org/2001/XMLSchema}normalizedString"
-    token = "{http://www.w3.org/2001/XMLSchema}token"
-    language = "{http://www.w3.org/2001/XMLSchema}language"
-    nmtoken = "{http://www.w3.org/2001/XMLSchema}NMTOKEN"
-    nmtokens = "{http://www.w3.org/2001/XMLSchema}NMTOKENS"
-    xsd_name = "{http://www.w3.org/2001/XMLSchema}Name"
-    ncname = "{http://www.w3.org/2001/XMLSchema}NCName"
-    id = "{http://www.w3.org/2001/XMLSchema}ID"
-    idref = "{http://www.w3.org/2001/XMLSchema}IDREF"
-    idrefs = "{http://www.w3.org/2001/XMLSchema}IDREFS"
-    entity = "{http://www.w3.org/2001/XMLSchema}ENTITY"
-    entities = "{http://www.w3.org/2001/XMLSchema}ENTITIES"
-    integer = "{http://www.w3.org/2001/XMLSchema}integer"
-    nonpositiveinteger = "{http://www.w3.org/2001/XMLSchema}nonPositiveInteger"
-    negativeinteger = "{http://www.w3.org/2001/XMLSchema}negativeInteger"
-    long = "{http://www.w3.org/2001/XMLSchema}long"
-    int = "{http://www.w3.org/2001/XMLSchema}int"
-    short = "{http://www.w3.org/2001/XMLSchema}short"
-    byte = "{http://www.w3.org/2001/XMLSchema}byte"
-    nonnegativeinteger = "{http://www.w3.org/2001/XMLSchema}nonNegativeInteger"
-    unsignedlong = "{http://www.w3.org/2001/XMLSchema}unsignedLong"
-    unsignedint = "{http://www.w3.org/2001/XMLSchema}unsignedInt"
-    unsignedshort = "{http://www.w3.org/2001/XMLSchema}unsignedShort"
-    unsignedbyte = "{http://www.w3.org/2001/XMLSchema}unsignedByte"
-    positiveinteger = "{http://www.w3.org/2001/XMLSchema}positiveInteger"
+    normalizedstring = "xsd:normalizedString"
+    token = "xsd:token"
+    language = "xsd:language"
+    nmtoken = "xsd:NMTOKEN"
+    nmtokens = "xsd:NMTOKENS"
+    xsd_name = "xsd:Name"
+    ncname = "xsd:NCName"
+    id = "xsd:ID"
+    idref = "xsd:IDREF"
+    idrefs = "xsd:IDREFS"
+    entity = "xsd:ENTITY"
+    entities = "xsd:ENTITIES"
+    integer = "xsd:integer"
+    nonpositiveinteger = "xsd:nonPositiveInteger"
+    negativeinteger = "xsd:negativeInteger"
+    long = "xsd:long"
+    int = "xsd:int"
+    short = "xsd:short"
+    byte = "xsd:byte"
+    nonnegativeinteger = "xsd:nonNegativeInteger"
+    unsignedlong = "xsd:unsignedLong"
+    unsignedint = "xsd:unsignedInt"
+    unsignedshort = "xsd:unsignedShort"
+    unsignedbyte = "xsd:unsignedByte"
+    positiveinteger = "xsd:positiveInteger"
 
 
 def uuid4():
@@ -72,7 +63,7 @@ def uuid4():
     )
 
 
-def random_build_in_type(type: BuiltInType) -> str:
+def random_built_in_type(type: BuiltInType) -> str:
     match type:
         # Primitive types
         case BuiltInType.string:

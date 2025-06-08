@@ -1,12 +1,13 @@
 import random
 from typing import Any
+import xml.etree.ElementTree as ET
 
 import pytest
 import xmlschema
-from lxml import etree
 
 import xsd2xml.types as types
 from xsd2xml.utils import ns
+import io
 
 
 @pytest.fixture(autouse=True)
@@ -14,18 +15,31 @@ def set_seed():
     random.seed(1)
 
 
-def _test_type(type_name: str, value: Any):
-    xsd_schema = etree.Element("{http://www.w3.org/2001/XMLSchema}schema", nsmap=ns)
-    xsd_element = etree.Element(
+@pytest.fixture(autouse=True, scope="session")
+def register_namespaces():
+    for k, v in ns.items():
+        ET.register_namespace(k, v)
+
+
+def _test_type(xsd_type_name: str, value: Any):
+    xsd_schema = ET.Element(
+        "{http://www.w3.org/2001/XMLSchema}schema",
+    )
+    xsd_element = ET.Element(
         "{http://www.w3.org/2001/XMLSchema}element",
-        attrib={"name": "test", "type": type_name},
+        attrib={"name": "test", "type": xsd_type_name},
     )
     xsd_schema.append(xsd_element)
+    xsd_tree = ET.ElementTree(xsd_schema)
 
-    xml_element = etree.Element("test")
+    data = io.StringIO()
+    xsd_tree.write(data, encoding="unicode")
+    serialized = data.getvalue()
+
+    xml_element = ET.Element("test")
     xml_element.text = value
 
-    schema = xmlschema.XMLSchema(source=xsd_schema)  # type: ignore
+    schema = xmlschema.XMLSchema(source=serialized)
     assert schema.is_valid(xml_element)
 
 
