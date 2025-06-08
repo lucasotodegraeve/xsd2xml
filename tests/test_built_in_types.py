@@ -1,24 +1,10 @@
-import random
 from typing import Any
 import xml.etree.ElementTree as ET
+import io
 
-import pytest
 import xmlschema
 
 import xsd2xml.types as types
-from xsd2xml.utils import ns
-import io
-
-
-@pytest.fixture(autouse=True)
-def set_seed():
-    random.seed(1)
-
-
-@pytest.fixture(autouse=True, scope="session")
-def register_namespaces():
-    for k, v in ns.items():
-        ET.register_namespace(k, v)
 
 
 def _test_type(xsd_type_name: str, value: Any):
