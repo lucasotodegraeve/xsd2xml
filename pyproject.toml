@@ -4,14 +4,11 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "lxml>=5.4.0",
-]
+dependencies = []
 
 [project.optional-dependencies]
 dev = []
 test = [
-    "lxml-stubs>=0.5.1",
     "pytest>=8.3.5",
     "xmlschema>=4.0.1",
 ]

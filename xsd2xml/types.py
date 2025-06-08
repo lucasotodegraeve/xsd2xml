@@ -4,17 +4,16 @@ import string
 from dataclasses import dataclass
 from uuid import UUID
 
-from lxml.etree import _Element  # type: ignore
-
+from xml.etree.ElementTree import Element
 
 @dataclass
 class ComplexType:
-    root: _Element
+    root: Element
 
 
 @dataclass
 class SimpleType:
-    root: _Element
+    root: Element
 
 
 class BuiltInType(str, Enum):
