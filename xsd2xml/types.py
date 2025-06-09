@@ -1,10 +1,7 @@
 from enum import Enum
 import random
 import string
-from dataclasses import dataclass
 from uuid import UUID
-
-from xml.etree.ElementTree import Element
 
 
 class BuiltInType(str, Enum):
@@ -121,9 +118,9 @@ def random_built_in_type(type: BuiltInType) -> str:
         case BuiltInType.ncname:
             raise NotImplementedError()
         case BuiltInType.id:
-            return uuid4()
+            return random_id()
         case BuiltInType.idref:
-            return uuid4()
+            raise NotImplementedError()
         case BuiltInType.idrefs:
             raise NotImplementedError()
         case BuiltInType.entity:
@@ -256,3 +253,7 @@ def random_duration() -> str:
 def random_any_uri() -> str:
     # TODO: relative, fragments
     return "https://www.example.com/"
+
+
+def random_id() -> str:
+    return uuid4()

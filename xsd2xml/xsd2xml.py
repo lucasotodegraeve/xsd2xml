@@ -1,6 +1,5 @@
 import random
 from typing import Iterable, cast
-from dataclasses import dataclass
 import xml.etree.ElementTree as ET
 
 from .element_wrapper import _Element
@@ -11,34 +10,6 @@ from xsd2xml.types import (
     random_string,
 )
 from xsd2xml.utils import ns, InvalidXSDError
-
-
-# class XSD(str, Enum):
-#     element = "{http://www.w3.org/2001/XMLSchema}element"
-#     sequence = "{http://www.w3.org/2001/XMLSchema}sequence"
-#     choice = "{http://www.w3.org/2001/XMLSchema}choice"
-#     all = "{http://www.w3.org/2001/XMLSchema}all"
-#     any = "{http://www.w3.org/2001/XMLSchema}any"
-#     attribute = "{http://www.w3.org/2001/XMLSchema}attribute"
-#     anyAttribute = "{http://www.w3.org/2001/XMLSchema}anyAttribute"
-#     complex_type = "{http://www.w3.org/2001/XMLSchema}complexType"
-#     simple_type = "{http://www.w3.org/2001/XMLSchema}simpleType"
-#     simple_content = "{http://www.w3.org/2001/XMLSchema}simpleContent"
-#     complex_content = "{http://www.w3.org/2001/XMLSchema}complexContent"
-#     attribute_group = "{http://www.w3.org/2001/XMLSchema}attributeGroup"
-#     group = "{http://www.w3.org/2001/XMLSchema}group"
-#     list = "{http://www.w3.org/2001/XMLSchema}list"
-#     restriction = "{http://www.w3.org/2001/XMLSchema}restriction"
-#     extension = "{http://www.w3.org/2001/XMLSchema}extension"
-#     union = "{http://www.w3.org/2001/XMLSchema}union"
-#     enumeration = "{http://www.w3.org/2001/XMLSchema}enumeration"
-#     length = "{http://www.w3.org/2001/XMLSchema}length"
-
-
-@dataclass
-class Context:
-    root: _Element
-    namespaces: dict[str, str]
 
 
 def generate(xsd_path: str, element_name: str) -> ET.ElementTree:
@@ -230,6 +201,10 @@ def _set_attributes(
 
         do_not_create = random.random() > 0.5
         if not required and do_not_create:
+            continue
+
+        if type == "xsd:IDREF":
+            # Not supported currently
             continue
 
         if type in BuiltInType:
