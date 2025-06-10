@@ -1,31 +1,19 @@
 import random
-from typing import cast
 import xml.etree.ElementTree as ET
 
-from .element_wrapper import _Element
+from .element_wrapper import _Element, _ElementTree
 
 from xsd2xml.types import (
     BuiltInType,
     random_built_in_type,
     random_string,
 )
-from xsd2xml.utils import ns, InvalidXSDError, XSD
+from xsd2xml.utils import InvalidXSDError, XSD
 
 
 def generate(xsd_path: str, element_name: str) -> ET.ElementTree:
-    xsd_tree = ET.parse(xsd_path)
+    xsd_tree = _ElementTree.parse(xsd_path)
     xsd_root = xsd_tree.getroot()
-
-    namespaces = [
-        ns_tuple for _, ns_tuple in ET.iterparse(xsd_path, events=["start-ns"])
-    ]
-    namespaces = dict(cast(list[tuple[str, str]], namespaces))
-    xsd_root = _Element(
-        xsd_root,
-        doc_ns=namespaces,
-        user_ns=ns,
-        root=xsd_root,
-    )
 
     xsd_element = xsd_root.find(f"xsd:element[@name='{element_name}']")
     if xsd_element is None:

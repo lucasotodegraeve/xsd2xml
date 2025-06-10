@@ -1,7 +1,7 @@
-from typing import Generator
+from typing import Generator, Self, cast
 import xml.etree.ElementTree as ET
 
-from xsd2xml.utils import InvalidXSDError
+from xsd2xml.utils import InvalidXSDError, ns
 
 
 class _Element:
@@ -129,3 +129,29 @@ class _Element:
 
 def _is_tag_namespaced(tag: str) -> bool:
     return ":" in tag or "{" in tag
+
+
+class _ElementTree:
+    def __init__(self, tree: ET.ElementTree, nsmap: dict[str, str]) -> None:
+        self._tree = tree
+        self._namespaces = nsmap
+
+    @classmethod
+    def parse(cls, path: str) -> Self:
+        namespaces = [
+            ns_tuple for _, ns_tuple in ET.iterparse(path, events=["start-ns"])
+        ]
+        namespaces = dict(cast(list[tuple[str, str]], namespaces))
+        return cls(ET.parse(path), namespaces)  # pyright: ignore[reportArgumentType]
+
+    def getroot(self) -> _Element:
+        xsd_root = self._tree.getroot()
+        if xsd_root is None:
+            raise ValueError()
+
+        return _Element(
+            xsd_root,
+            doc_ns=self._namespaces,
+            user_ns=ns,
+            root=xsd_root,
+        )
