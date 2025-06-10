@@ -91,28 +91,32 @@ def _find_type_definition(xsd_element: _Element) -> _Element | BuiltInType:
     raise InvalidXSDError()
 
 
+def _find_complex_type_definition(xsd_element: _Element) -> _Element:
+    complex_type = _find_type_definition(xsd_element)
+    if not isinstance(complex_type, _Element):
+        raise InvalidXSDError()
+    return complex_type
+
+
 def _recursively_generate_element(xsd_element: _Element) -> list[ET.Element]:
-    xsd_element = _try_resolve_reference(xsd_element)
     random_occurs = _get_random_occurs(xsd_element)
+    xsd_element = _try_resolve_reference(xsd_element)
     type_definition = _find_type_definition(xsd_element)
 
     if isinstance(type_definition, BuiltInType):
-        return [_create_built_in_element(xsd_element) for _ in range(random_occurs)]
+        generate_element_fn = _create_built_in_element
     elif type_definition.tag == "xsd:simpleType":
         raise NotImplementedError()
     elif type_definition.tag == "xsd:complexType":
-        return [
-            _create_complex_element(xsd_element, type_definition)
-            for _ in range(random_occurs)
-        ]
+        generate_element_fn = _create_complex_element
+    else:
+        raise InvalidXSDError()
 
-    raise InvalidXSDError()
+    return [generate_element_fn(xsd_element) for _ in range(random_occurs)]
 
 
 def _create_built_in_element(xsd_element: _Element) -> ET.Element:
-    name = xsd_element.get("name")
-    if name is None:
-        raise InvalidXSDError()
+    name = _get_name_attribute(xsd_element)
     generated_element = ET.Element(name)
     xsd_type = xsd_element.get_resolved_attribute("type")
     if xsd_type is None or xsd_type not in BuiltInType:
@@ -121,12 +125,9 @@ def _create_built_in_element(xsd_element: _Element) -> ET.Element:
     return generated_element
 
 
-def _create_complex_element(
-    xsd_element: _Element, complex_type: _Element
-) -> ET.Element:
-    element_name = xsd_element.get("name")
-    if element_name is None:
-        raise InvalidXSDError()
+def _create_complex_element(xsd_element: _Element) -> ET.Element:
+    complex_type = _find_complex_type_definition(xsd_element)
+    element_name = _get_name_attribute(xsd_element)
 
     main_child = next(el for el in complex_type.children if el.tag != "xsd:attribute")
 
@@ -191,19 +192,15 @@ def _set_attributes(
         if xsd_attribute.tag == "xsd:anyAttribute":
             raise NotImplementedError()
 
-        name = xsd_attribute.get("name")
+        name = _get_name_attribute(xsd_attribute)
         type = xsd_attribute.get_resolved_attribute("type")
-
-        required = xsd_attribute.get("use") == "required"
-
-        if name is None:
-            raise InvalidXSDError()
+        is_attribute_required = xsd_attribute.get("use") == "required"
 
         do_not_create = random.random() > 0.5
-        if not required and do_not_create:
+        if not is_attribute_required and do_not_create:
             continue
 
-        if type == "xsd:IDREF":
+        if type in ("xsd:IDREF", "xsd:IDREFS"):
             # Not supported currently
             continue
 
@@ -298,3 +295,10 @@ def _create_any_element(xsd_any: _Element) -> list[ET.Element]:
     # TODO: add something with a namespace
     random_occurs = _get_random_occurs(xsd_any)
     return [ET.Element(random_string()) for _ in range(random_occurs)]
+
+
+def _get_name_attribute(element: _Element) -> str:
+    name = element.get("name")
+    if name is None:
+        raise InvalidXSDError()
+    return name
