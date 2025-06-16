@@ -5,6 +5,8 @@ from .element_wrapper import _Element, _ElementTree
 
 from xsd2xml.types import (
     BuiltInType,
+    IDMarker,
+    IDREFMarker,
     random_built_in_type,
     random_string,
 )
@@ -22,11 +24,45 @@ def generate(xsd_path: str, element_name: str) -> ET.ElementTree:
     created_element = _recursively_generate_element(xsd_element)
     created_element = next(iter(created_element))
 
+    _recurse_markers(created_element)
+
     target_namespace = xsd_root.get("targetNamespace")
     if target_namespace is not None:
         created_element.attrib["xmlns"] = target_namespace
 
     return ET.ElementTree(created_element)
+
+
+def _recurse_markers(element: ET.Element) -> None:
+    ids = _recurse_find_ids(element)
+    _recurse_populate_idrefs(element, ids)
+
+
+def _recurse_find_ids(element: ET.Element) -> list[str]:
+    ids = []
+    for child in element:
+        ids += _recurse_find_ids(child)
+
+    if isinstance(element.text, IDMarker):
+        ids.append(element.text)
+
+    for v in element.attrib.values():
+        if isinstance(v, IDMarker):
+            ids.append(v)
+
+    return ids
+
+
+def _recurse_populate_idrefs(element: ET.Element, ids: list[str]) -> None:
+    if isinstance(element.text, IDREFMarker):
+        element.text = random.choice(ids)
+
+    for k, v in element.attrib.items():
+        if isinstance(v, IDREFMarker):
+            element.attrib[k] = random.choice(ids)
+
+    for child in element:
+        _recurse_populate_idrefs(child, ids)
 
 
 def _try_resolve_reference(element: _Element) -> _Element:

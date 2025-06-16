@@ -4,6 +4,15 @@ import string
 from uuid import UUID
 
 
+class Marker(str): ...
+
+
+class IDMarker(Marker): ...
+
+
+class IDREFMarker(Marker): ...
+
+
 class BuiltInType(str, Enum):
     # https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
     string = "xsd:string"
@@ -118,9 +127,9 @@ def random_built_in_type(type: BuiltInType) -> str:
         case BuiltInType.ncname:
             raise NotImplementedError()
         case BuiltInType.id:
-            return random_id()
+            return IDMarker(random_id())
         case BuiltInType.idref:
-            raise NotImplementedError()
+            return IDREFMarker()
         case BuiltInType.idrefs:
             raise NotImplementedError()
         case BuiltInType.entity:
