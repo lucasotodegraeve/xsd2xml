@@ -166,7 +166,7 @@ def _generate_complex_element(xsd_element: _Element) -> ET.Element:
         case XSD.simple_content:
             restriction_or_extension = next(main_child.children)
             created_element = ET.Element(element_name)
-            created_element.text = _generate_simple_content(main_child)
+            created_element.text = _generate_simple_content_text(main_child)
             created_element.attrib = _generate_attributes(restriction_or_extension)
         case XSD.complex_content:
             raise NotImplementedError()
@@ -306,11 +306,9 @@ def _choose_restriction_enumeration(enumerations: list[_Element]) -> str:
     return enum_value
 
 
-def _generate_simple_content(simple_content: _Element) -> str:
+def _generate_simple_content_text(simple_content: _Element) -> str:
     restriction_or_extension = next(simple_content.children)
     base = restriction_or_extension.get_resolved_attribute("base")
-    if base is None:
-        raise InvalidXSDError()
 
     if base not in BuiltInType:
         raise NotImplementedError()
