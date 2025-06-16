@@ -20,3 +20,8 @@ def test_agent_identifier_valid(premis_xsd: XMLSchema):
 def test_agent(premis_xsd: XMLSchema):
     doc = xsd2xml.generate(PREMIS, "agent")
     assert premis_xsd.is_valid(serialize_tree(doc))
+
+
+def test_event(premis_xsd: XMLSchema):
+    doc = xsd2xml.generate(PREMIS, "event")
+    assert premis_xsd.is_valid(serialize_tree(doc))
