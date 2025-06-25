@@ -1,7 +1,7 @@
 import random
 import xml.etree.ElementTree as ET
 
-from .element_wrapper import _Element, _ElementTree
+from .element_wrapper import _Element, _ElementTree, Placeholder
 
 from xsd2xml.types import (
     BuiltInType,
@@ -22,7 +22,7 @@ def generate(xsd_path: str, element_name: str) -> ET.ElementTree:
         raise ValueError()
 
     created_element = _recursively_generate_element(xsd_element)
-    created_element = next(iter(created_element))
+    created_element = next(iter(created_element))._to_tree()
 
     _recurse_markers(created_element)
 
@@ -124,7 +124,7 @@ def _find_complex_type_definition(xsd_element: _Element) -> _Element:
     return complex_type
 
 
-def _recursively_generate_element(xsd_element: _Element) -> list[ET.Element]:
+def _recursively_generate_element(xsd_element: _Element) -> list[Placeholder]:
     random_occurs = _get_random_occurs(xsd_element)
     xsd_element = _try_resolve_reference(xsd_element)
     type_definition = _find_type_definition(xsd_element)
@@ -141,9 +141,9 @@ def _recursively_generate_element(xsd_element: _Element) -> list[ET.Element]:
     return [generate_element_fn(xsd_element) for _ in range(random_occurs)]
 
 
-def _generate_built_in_element(xsd_element: _Element) -> ET.Element:
+def _generate_built_in_element(xsd_element: _Element) -> Placeholder:
     name = _get_name_attribute(xsd_element)
-    generated_element = ET.Element(name)
+    generated_element = Placeholder(tag=name)
     xsd_type = xsd_element.get_resolved_attribute("type")
     if xsd_type is None or xsd_type not in BuiltInType:
         raise InvalidXSDError()
@@ -151,7 +151,7 @@ def _generate_built_in_element(xsd_element: _Element) -> ET.Element:
     return generated_element
 
 
-def _generate_complex_element(xsd_element: _Element) -> ET.Element:
+def _generate_complex_element(xsd_element: _Element) -> Placeholder:
     complex_type = _find_complex_type_definition(xsd_element)
     element_name = _get_name_attribute(xsd_element)
 
@@ -160,12 +160,12 @@ def _generate_complex_element(xsd_element: _Element) -> ET.Element:
     match main_child.tag:
         case XSD.sequence | XSD.choice | XSD.all:
             children = _recurse_indicator(main_child)
-            created_element = ET.Element(element_name)
-            created_element.extend(children)
+            created_element = Placeholder(tag=element_name)
+            created_element.children.extend(children)
             created_element.attrib = _generate_attributes(complex_type)
         case XSD.simple_content:
             restriction_or_extension = next(main_child.children)
-            created_element = ET.Element(element_name)
+            created_element = Placeholder(tag=element_name)
             created_element.text = _generate_simple_content_text(main_child)
             created_element.attrib = _generate_attributes(restriction_or_extension)
         case XSD.complex_content:
@@ -225,7 +225,10 @@ def _generate_attribute_value(xsd_attribute: _Element) -> str:
 
     is_type_user_defined = type is not None and type not in BuiltInType
     if is_type_user_defined:
-        raise NotImplementedError()
+        simple_type = xsd_attribute.root.find(f"xsd:simpleType[@name='{type}']")
+        if simple_type is None:
+            raise InvalidXSDError()
+        return _generate_simple_type(simple_type)
 
     is_type_anonymous = type is None
     if is_type_anonymous:
@@ -237,8 +240,8 @@ def _generate_attribute_value(xsd_attribute: _Element) -> str:
     raise InvalidXSDError()
 
 
-def _recurse_indicator(indicator: _Element) -> list[ET.Element]:
-    result: list[ET.Element] = []
+def _recurse_indicator(indicator: _Element) -> list[Placeholder]:
+    result: list[Placeholder] = []
     match indicator.tag:
         # Base conditions
         case XSD.element:
@@ -281,7 +284,8 @@ def _generate_restricted(restriction: _Element) -> str:
     if base is None:
         raise InvalidXSDError()
 
-    if base not in BuiltInType:
+    is_type_user_defined = base not in BuiltInType
+    if is_type_user_defined:
         raise NotImplementedError()
 
     # Assuming the enumerations are correct
@@ -323,10 +327,10 @@ def _generate_simple_content_text(simple_content: _Element) -> str:
             raise InvalidXSDError()
 
 
-def _generate_any_element(xsd_any: _Element) -> list[ET.Element]:
+def _generate_any_element(xsd_any: _Element) -> list[Placeholder]:
     # TODO: add something with a namespace
     random_occurs = _get_random_occurs(xsd_any)
-    return [ET.Element(random_string()) for _ in range(random_occurs)]
+    return [Placeholder(tag=random_string()) for _ in range(random_occurs)]
 
 
 def _get_name_attribute(element: _Element) -> str:
