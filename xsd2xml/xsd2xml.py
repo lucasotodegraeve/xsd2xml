@@ -21,6 +21,8 @@ def generate(xsd_path: str, element_name: str) -> ET.ElementTree:
     if xsd_element is None:
         raise ValueError()
 
+    # TODO: check if there are ids if idrefs are required
+
     created_element = _recursively_generate_element(xsd_element)
     created_element = next(iter(created_element))._to_tree()
 
@@ -35,6 +37,8 @@ def generate(xsd_path: str, element_name: str) -> ET.ElementTree:
 
 def _recurse_markers(element: ET.Element) -> None:
     ids = _recurse_find_ids(element)
+    if len(ids) == 0:
+        _recurse_remove_idrefs(element)
     _recurse_populate_idrefs(element, ids)
 
 
@@ -65,6 +69,17 @@ def _recurse_populate_idrefs(element: ET.Element, ids: list[str]) -> None:
         _recurse_populate_idrefs(child, ids)
 
 
+def _recurse_remove_idrefs(element: ET.Element) -> None:
+    children = [el for el in element]
+    for child in children:
+        if isinstance(child.text, IDREFMarker):
+            element.remove(child)
+
+        for k, v in child.attrib.copy().items():
+            if isinstance(v, IDREFMarker):
+                child.attrib.pop(k)
+
+
 def _try_resolve_reference(element: _Element) -> _Element:
     ref = element.get("ref")
     tag = element.tag
@@ -83,7 +98,7 @@ def _get_random_occurs(xsd_element: _Element) -> int:
 
     max_occurs = xsd_element.get("maxOccurs")
     max_occurs = max_occurs if max_occurs else 1
-    max_occurs = 5 if max_occurs == "unbounded" else max_occurs
+    max_occurs = 2 if max_occurs == "unbounded" else max_occurs
 
     return random.randint(int(min_occurs), int(max_occurs))
 
