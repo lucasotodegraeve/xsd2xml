@@ -13,7 +13,7 @@ class IDMarker(Marker): ...
 class IDREFMarker(Marker): ...
 
 
-class BuiltInType(str, Enum):
+class BuiltIn(str, Enum):
     # https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
     string = "xsd:string"
     boolean = "xsd:boolean"
@@ -69,98 +69,98 @@ def uuid4():
     )
 
 
-def random_built_in_type(type: BuiltInType) -> str:
+def random_built_in_type(type: BuiltIn) -> str:
     match type:
         # Primitive types
-        case BuiltInType.string:
+        case BuiltIn.string:
             return random_string()
-        case BuiltInType.boolean:
+        case BuiltIn.boolean:
             return random_boolean()
-        case BuiltInType.decimal:
+        case BuiltIn.decimal:
             return random_decimal()
-        case BuiltInType.float:
+        case BuiltIn.float:
             return random_float()
-        case BuiltInType.double:
+        case BuiltIn.double:
             return random_double()
-        case BuiltInType.duration:
+        case BuiltIn.duration:
             return random_duration()
-        case BuiltInType.date_time:
+        case BuiltIn.date_time:
             raise NotImplementedError()
-        case BuiltInType.time:
+        case BuiltIn.time:
             raise NotImplementedError()
-        case BuiltInType.date:
+        case BuiltIn.date:
             raise NotImplementedError()
-        case BuiltInType.g_year_month:
+        case BuiltIn.g_year_month:
             raise NotImplementedError()
-        case BuiltInType.g_year:
+        case BuiltIn.g_year:
             raise NotImplementedError()
-        case BuiltInType.g_month_day:
+        case BuiltIn.g_month_day:
             raise NotImplementedError()
-        case BuiltInType.g_day:
+        case BuiltIn.g_day:
             raise NotImplementedError()
-        case BuiltInType.g_month:
+        case BuiltIn.g_month:
             raise NotImplementedError()
-        case BuiltInType.hex_binary:
+        case BuiltIn.hex_binary:
             raise NotImplementedError()
-        case BuiltInType.base64_binary:
+        case BuiltIn.base64_binary:
             raise NotImplementedError()
-        case BuiltInType.any_uri:
+        case BuiltIn.any_uri:
             return random_any_uri()
-        case BuiltInType.q_name:
+        case BuiltIn.q_name:
             raise NotImplementedError()
-        case BuiltInType.notation:
+        case BuiltIn.notation:
             raise NotImplementedError()
 
         # Derived types
-        case BuiltInType.normalizedstring:
+        case BuiltIn.normalizedstring:
             raise NotImplementedError()
-        case BuiltInType.token:
+        case BuiltIn.token:
             raise NotImplementedError()
-        case BuiltInType.language:
+        case BuiltIn.language:
             raise NotImplementedError()
-        case BuiltInType.nmtoken:
+        case BuiltIn.nmtoken:
             raise NotImplementedError()
-        case BuiltInType.nmtokens:
+        case BuiltIn.nmtokens:
             raise NotImplementedError()
-        case BuiltInType.xsd_name:
+        case BuiltIn.xsd_name:
             raise NotImplementedError()
-        case BuiltInType.ncname:
+        case BuiltIn.ncname:
             raise NotImplementedError()
-        case BuiltInType.id:
+        case BuiltIn.id:
             return IDMarker(random_id())
-        case BuiltInType.idref:
+        case BuiltIn.idref:
             return IDREFMarker()
-        case BuiltInType.idrefs:
+        case BuiltIn.idrefs:
             raise NotImplementedError()
-        case BuiltInType.entity:
+        case BuiltIn.entity:
             raise NotImplementedError()
-        case BuiltInType.entities:
+        case BuiltIn.entities:
             raise NotImplementedError()
-        case BuiltInType.integer:
+        case BuiltIn.integer:
             return random_integer()
-        case BuiltInType.nonpositiveinteger:
+        case BuiltIn.nonpositiveinteger:
             raise NotImplementedError()
-        case BuiltInType.negativeinteger:
+        case BuiltIn.negativeinteger:
             raise NotImplementedError()
-        case BuiltInType.long:
+        case BuiltIn.long:
             raise NotImplementedError()
-        case BuiltInType.int:
+        case BuiltIn.int:
             raise NotImplementedError()
-        case BuiltInType.short:
+        case BuiltIn.short:
             raise NotImplementedError()
-        case BuiltInType.byte:
+        case BuiltIn.byte:
             raise NotImplementedError()
-        case BuiltInType.nonnegativeinteger:
+        case BuiltIn.nonnegativeinteger:
             raise NotImplementedError()
-        case BuiltInType.unsignedlong:
+        case BuiltIn.unsignedlong:
             raise NotImplementedError()
-        case BuiltInType.unsignedint:
+        case BuiltIn.unsignedint:
             raise NotImplementedError()
-        case BuiltInType.unsignedshort:
+        case BuiltIn.unsignedshort:
             raise NotImplementedError()
-        case BuiltInType.unsignedbyte:
+        case BuiltIn.unsignedbyte:
             raise NotImplementedError()
-        case BuiltInType.positiveinteger:
+        case BuiltIn.positiveinteger:
             raise NotImplementedError()
 
 

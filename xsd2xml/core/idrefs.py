@@ -1,6 +1,7 @@
 import random
 import xml.etree.ElementTree as ET
-from xsd2xml.builtins import IDMarker, IDREFMarker
+
+from .builtins import IDMarker, IDREFMarker
 
 
 def _recurse_markers(element: ET.Element) -> None:

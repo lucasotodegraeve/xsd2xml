@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 
 import pytest
 
-from xsd2xml.utils import ns
+ns = {"xsd": "http://www.w3.org/2001/XMLSchema"}
 
 
 @pytest.fixture(autouse=True)

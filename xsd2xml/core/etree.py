@@ -1,9 +1,7 @@
 from typing import Generator, Self, cast
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass, field
-from enum import Enum, auto
 
-from xsd2xml.utils import InvalidXSDError, ns
+from .utils import InvalidXSDError, ns
 
 
 class _Element:
@@ -157,55 +155,3 @@ class _ElementTree:
             user_ns=ns,
             root=xsd_root,
         )
-
-
-class ElementType(Enum):
-    normal = auto()
-    id = auto()
-    idref = auto()
-
-
-@dataclass
-class Placeholder:
-    tag: str | None = None
-    text: str | None = None
-    attrib: dict[str, str] = field(default_factory=dict)
-    children: list["Placeholder"] = field(default_factory=list)
-    type: ElementType = ElementType.normal
-
-    def to_element(self) -> ET.Element:
-        if self.tag is None:
-            raise ValueError()
-
-        element = ET.Element(self.tag, attrib=self.attrib)
-        element.text = self.text
-        return element
-
-    def _to_tree(self) -> ET.Element:
-        children = [child._to_tree() for child in self.children]
-        element = self.to_element()
-        element.extend(children)
-        return element
-
-    def to_tree(self) -> ET.ElementTree:
-        element = self._to_tree()
-        return ET.ElementTree(element)
-
-    @property
-    def is_id(self) -> bool:
-        return self.type == ElementType.id
-
-    @property
-    def is_idref(self) -> bool:
-        return self.type == ElementType.idref
-
-    def _str_element(self, indent=0) -> str:
-        return indent * "\t" + f"{self.tag} - {self.attrib} - {self.text}"
-
-    def _str_tree(self, indent=0) -> str:
-        output = self._str_element(indent)
-
-        for child in self.children:
-            child._str_element(indent + 1)
-
-        return output
