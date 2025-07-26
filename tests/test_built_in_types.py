@@ -4,16 +4,14 @@ import io
 
 import xmlschema
 
-import xsd2xml.types as types
+import xsd2xml.core.builtins as builtins
+from xsd2xml.core.namespaces import xsd
 
 
 def _test_type(xsd_type_name: str, value: Any):
-    xsd_schema = ET.Element(
-        "{http://www.w3.org/2001/XMLSchema}schema",
-    )
+    xsd_schema = ET.Element(xsd.schema)
     xsd_element = ET.Element(
-        "{http://www.w3.org/2001/XMLSchema}element",
-        attrib={"name": "test", "type": xsd_type_name},
+        xsd.element, attrib={"name": "test", "type": xsd_type_name}
     )
     xsd_schema.append(xsd_element)
     xsd_tree = ET.ElementTree(xsd_schema)
@@ -31,34 +29,35 @@ def _test_type(xsd_type_name: str, value: Any):
 
 def test_string():
     for _ in range(100):
-        _test_type("xsd:string", types.random_string())
+        # TODO: fix prefixes
+        _test_type("xsd:string", builtins.random_string())
 
 
 def test_boolean():
     for _ in range(100):
-        _test_type("xsd:boolean", types.random_boolean())
+        _test_type("xsd:boolean", builtins.random_boolean())
 
 
 def test_decimal():
     for _ in range(100):
-        _test_type("xsd:decimal", types.random_decimal())
+        _test_type("xsd:decimal", builtins.random_decimal())
 
 
 def test_float():
     for _ in range(100):
-        _test_type("xsd:float", types.random_float())
+        _test_type("xsd:float", builtins.random_float())
 
 
 def test_double():
     for _ in range(100):
-        _test_type("xsd:double", types.random_double())
+        _test_type("xsd:double", builtins.random_double())
 
 
 def test_duration():
     for _ in range(100):
-        _test_type("xsd:duration", types.random_duration())
+        _test_type("xsd:duration", builtins.random_duration())
 
 
 def test_integer():
     for _ in range(100):
-        _test_type("xsd:integer", types.random_integer())
+        _test_type("xsd:integer", builtins.random_integer())

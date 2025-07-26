@@ -15,7 +15,7 @@ class Element:
     text: str | None = None
     attrib: dict[str, str] = field(default_factory=dict)
     children: list["Element"] = field(default_factory=list)
-    type: ElementType = ElementType.normal
+    marker: ElementType = ElementType.normal
 
     def to_element(self) -> ET.Element:
         if self.tag is None:

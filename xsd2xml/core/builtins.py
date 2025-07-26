@@ -3,6 +3,8 @@ import random
 import string
 from uuid import UUID
 
+from .namespaces import xsd
+
 
 class Marker(str): ...
 
@@ -15,52 +17,52 @@ class IDREFMarker(Marker): ...
 
 class BuiltIn(str, Enum):
     # https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
-    string = "xsd:string"
-    boolean = "xsd:boolean"
-    decimal = "xsd:decimal"
-    float = "xsd:float"
-    double = "xsd:double"
-    duration = "xsd:duration"
-    date_time = "xsd:dateTime"
-    time = "xsd:time"
-    date = "xsd:date"
-    g_year_month = "xsd:gYearMonth"
-    g_year = "xsd:gYear"
-    g_month_day = "xsd:gMonthDay"
-    g_day = "xsd:gDay"
-    g_month = "xsd:gMonth"
-    hex_binary = "xsd:hexBinary"
-    base64_binary = "xsd:base64Binary"
-    any_uri = "xsd:anyURI"
-    q_name = "xsd:QName"
-    notation = "xsd:NOTATION"
+    string = xsd.string
+    boolean = xsd.boolean
+    decimal = xsd.decimal
+    float = xsd.float
+    double = xsd.double
+    duration = xsd.duration
+    date_time = xsd.dateTime
+    time = xsd.time
+    date = xsd.date
+    g_year_month = xsd.gYearMonth
+    g_year = xsd.gYear
+    g_month_day = xsd.gMonthDay
+    g_day = xsd.gDay
+    g_month = xsd.gMonth
+    hex_binary = xsd.hexBinary
+    base64_binary = xsd.base64Binary
+    any_uri = xsd.anyURI
+    q_name = xsd.QName
+    notation = xsd.NOTATION
 
     # https://www.w3.org/TR/xmlschema-2/#built-in-derived
-    normalizedstring = "xsd:normalizedString"
-    token = "xsd:token"
-    language = "xsd:language"
-    nmtoken = "xsd:NMTOKEN"
-    nmtokens = "xsd:NMTOKENS"
-    xsd_name = "xsd:Name"
-    ncname = "xsd:NCName"
-    id = "xsd:ID"
-    idref = "xsd:IDREF"
-    idrefs = "xsd:IDREFS"
-    entity = "xsd:ENTITY"
-    entities = "xsd:ENTITIES"
-    integer = "xsd:integer"
-    nonpositiveinteger = "xsd:nonPositiveInteger"
-    negativeinteger = "xsd:negativeInteger"
-    long = "xsd:long"
-    int = "xsd:int"
-    short = "xsd:short"
-    byte = "xsd:byte"
-    nonnegativeinteger = "xsd:nonNegativeInteger"
-    unsignedlong = "xsd:unsignedLong"
-    unsignedint = "xsd:unsignedInt"
-    unsignedshort = "xsd:unsignedShort"
-    unsignedbyte = "xsd:unsignedByte"
-    positiveinteger = "xsd:positiveInteger"
+    normalizedstring = xsd.normalizedString
+    token = xsd.token
+    language = xsd.language
+    nmtoken = xsd.NMTOKEN
+    nmtokens = xsd.NMTOKENS
+    xsd_name = xsd.Name
+    ncname = xsd.NCName
+    id = xsd.ID
+    idref = xsd.IDREF
+    idrefs = xsd.IDREFS
+    entity = xsd.ENTITY
+    entities = xsd.ENTITIES
+    integer = xsd.integer
+    nonpositiveinteger = xsd.nonPositiveInteger
+    negativeinteger = xsd.negativeInteger
+    long = xsd.long
+    int = xsd.int
+    short = xsd.short
+    byte = xsd.byte
+    nonnegativeinteger = xsd.nonNegativeInteger
+    unsignedlong = xsd.unsignedLong
+    unsignedint = xsd.unsignedInt
+    unsignedshort = xsd.unsignedShort
+    unsignedbyte = xsd.unsignedByte
+    positiveinteger = xsd.positiveInteger
 
 
 def uuid4():
@@ -143,7 +145,7 @@ def random_built_in_type(type: BuiltIn) -> str:
         case BuiltIn.negativeinteger:
             raise NotImplementedError()
         case BuiltIn.long:
-            raise NotImplementedError()
+            return random_long()
         case BuiltIn.int:
             raise NotImplementedError()
         case BuiltIn.short:
@@ -151,7 +153,7 @@ def random_built_in_type(type: BuiltIn) -> str:
         case BuiltIn.byte:
             raise NotImplementedError()
         case BuiltIn.nonnegativeinteger:
-            raise NotImplementedError()
+            return random_non_negative_integer()
         case BuiltIn.unsignedlong:
             raise NotImplementedError()
         case BuiltIn.unsignedint:
@@ -217,6 +219,12 @@ def random_integer() -> str:
     return random.choice(choices)
 
 
+def random_non_negative_integer() -> str:
+    value = random.randint(0, 100)
+    choices = [f"+{value}", str(value)]
+    return random.choice(choices)
+
+
 def random_duration() -> str:
     years = random.randint(0, 10)
     months = random.randint(0, 10)
@@ -266,3 +274,9 @@ def random_any_uri() -> str:
 
 def random_id() -> str:
     return uuid4()
+
+
+def random_long() -> str:
+    return "0"
+    # return str(random.randint(-(2**63), 2**63 - 1))
+    # return str(2**64)

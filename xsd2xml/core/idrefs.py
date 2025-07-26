@@ -8,7 +8,8 @@ def _recurse_markers(element: ET.Element) -> None:
     ids = _recurse_find_ids(element)
     if len(ids) == 0:
         _recurse_remove_idrefs(element)
-    _recurse_populate_idrefs(element, ids)
+    else:
+        _recurse_populate_idrefs(element, ids)
 
 
 def _recurse_find_ids(element: ET.Element) -> list[str]:
@@ -44,6 +45,11 @@ def _recurse_remove_idrefs(element: ET.Element) -> None:
         if isinstance(child.text, IDREFMarker):
             element.remove(child)
 
-        for k, v in child.attrib.copy().items():
-            if isinstance(v, IDREFMarker):
-                child.attrib.pop(k)
+    for k, v in element.attrib.copy().items():
+        if isinstance(v, IDREFMarker):
+            element.attrib.pop(k)
+    
+    remaining_children = [child for child in element]
+    for child in remaining_children:
+        _recurse_remove_idrefs(child)
+
