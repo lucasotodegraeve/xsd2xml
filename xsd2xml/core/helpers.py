@@ -9,6 +9,16 @@ def _get_name_attribute(element: _Element) -> str:
     return name
 
 
+def get_element_name(element: _Element) -> str:
+    name = element.get("name")
+    if name is None:
+        raise InvalidXSDError()
+    target_namespace = element.root.get("targetNamespace", None)
+    if target_namespace is None:
+        return name
+    return "{" + target_namespace + "}" + name
+
+
 def _try_resolve_reference(element: _Element) -> _Element:
     ref = element.get("ref")
     tag = element.tag

@@ -8,7 +8,7 @@ from .builtins import BuiltIn
 from .namespaces import xsd
 
 
-def _recursively_generate_element(xsd_element: _Element) -> list[ph.Element]:
+def generate_element(xsd_element: _Element) -> list[ph.Element]:
     random_occurs = _get_random_occurs(xsd_element)
     xsd_element = helpers._try_resolve_reference(xsd_element)
     type_definition = types._find_type_definition_for_element(xsd_element)
@@ -26,7 +26,7 @@ def _recursively_generate_element(xsd_element: _Element) -> list[ph.Element]:
 
 
 def _generate_built_in_element(xsd_element: _Element) -> ph.Element:
-    name = helpers._get_name_attribute(xsd_element)
+    name = helpers.get_element_name(xsd_element)
     generated_element = ph.Element(tag=name)
     xsd_type = xsd_element.get("type")
     if xsd_type is None or xsd_type not in BuiltIn:

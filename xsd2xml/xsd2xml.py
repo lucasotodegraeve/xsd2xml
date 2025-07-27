@@ -13,16 +13,10 @@ def generate(xsd_path: str, element_name: str) -> ET.ElementTree:
     if xsd_element is None:
         raise ValueError()
 
-    # TODO: check if there are ids if idrefs are required
+    ph_elements = element.generate_element(xsd_element)
+    ph_element = next(iter(ph_elements))
+    root_element = ph_element.manifest_placeholders()
 
-    created_element = element._recursively_generate_element(xsd_element)
-    created_element = next(iter(created_element))
-    created_element = created_element._recurse_to_element()
+    idrefs._recurse_markers(root_element)
 
-    idrefs._recurse_markers(created_element)
-
-    target_namespace = xsd_root.get("targetNamespace")
-    if target_namespace is not None:
-        created_element.attrib["xmlns"] = target_namespace
-
-    return ET.ElementTree(created_element)
+    return ET.ElementTree(root_element)

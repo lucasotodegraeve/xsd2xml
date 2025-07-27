@@ -22,7 +22,7 @@ def _find_complex_type_definition(xsd_element: _Element) -> _Element:
 
 def generate_complex_element(xsd_element: _Element) -> ph.Element:
     xsd_complex_type = _find_complex_type_definition(xsd_element)
-    element_name = helpers._get_name_attribute(xsd_element)
+    element_name = helpers.get_element_name(xsd_element)
 
     placholder = _generate_complex_type_or_derivative(xsd_complex_type)
     placholder.tag = element_name
@@ -36,7 +36,7 @@ def _equal_complex_types(type_1: _Element, type_2: _Element) -> bool:
     return t1_name == t2_name
 
 
-def _is_derived_from(base_type: _Element, derived_type: _Element) -> bool:
+def _is_directly_derived_from(base_type: _Element, derived_type: _Element) -> bool:
     derived_main_child = next(
         filter(attribute._is_not_xsd_attribute, derived_type.children), None
     )
@@ -62,7 +62,7 @@ def _collect_derived_types(
         # A complex type is not a derivative of itself
         if _equal_complex_types(xsd_complex_type, complex_type):
             continue
-        if not _is_derived_from(xsd_complex_type, complex_type):
+        if not _is_directly_derived_from(xsd_complex_type, complex_type):
             continue
 
         yield complex_type
@@ -87,7 +87,7 @@ def _generate_complex_type_or_derivative(xsd_complex_type: _Element) -> ph.Eleme
     created_element = _generate_complex_type(random_complex_type)
 
     if random_complex_type != xsd_complex_type:
-        name = helpers._get_name_attribute(random_complex_type)
+        name = helpers.get_element_name(random_complex_type)
         created_element.attrib[xsi.type] = name
 
     return created_element
@@ -129,7 +129,7 @@ def _recurse_indicator(indicator: _Element) -> list[ph.Element]:
     match indicator.tag:
         # Base conditions
         case xsd.element:
-            return element._recursively_generate_element(indicator)
+            return element.generate_element(indicator)
         case xsd.any:
             return element._generate_any_element(indicator)
         # Recursive conditions

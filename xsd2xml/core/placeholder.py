@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 import xml.etree.ElementTree as ET
 
+from xsd2xml.core.namespaces import xsi
+
 
 class ElementType(Enum):
     normal = auto()
@@ -17,7 +19,7 @@ class Element:
     children: list["Element"] = field(default_factory=list)
     marker: ElementType = ElementType.normal
 
-    def to_element(self) -> ET.Element:
+    def manifest(self) -> ET.Element:
         if self.tag is None:
             raise ValueError()
 
@@ -25,12 +27,12 @@ class Element:
         element.text = self.text
         return element
 
-    def _recurse_to_element(self) -> ET.Element:
-        children = [child._recurse_to_element() for child in self.children]
-        element = self.to_element()
+    def manifest_placeholders(self) -> ET.Element:
+        children = [child.manifest_placeholders() for child in self.children]
+        element = self.manifest()
         element.extend(children)
         return element
 
     def to_tree(self) -> ET.ElementTree:
-        element = self._recurse_to_element()
+        element = self.manifest_placeholders()
         return ET.ElementTree(element)

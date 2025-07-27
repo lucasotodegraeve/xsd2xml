@@ -22,7 +22,7 @@ def _find_simple_type_definition(xsd_element: _Element) -> _Element:
 
 def generate_simple_element(xsd_element: _Element) -> ph.Element:
     complex_type = _find_simple_type_definition(xsd_element)
-    element_name = helpers._get_name_attribute(xsd_element)
+    element_name = helpers.get_element_name(xsd_element)
 
     placholder = _generate_simple_type_or_derivative(complex_type)
     placholder.tag = element_name
@@ -44,7 +44,7 @@ def generate_simple_type(xsd_simple_type: _Element) -> ph.Element:
             raise InvalidXSDError()
 
 
-def _is_derived_from(base_type: _Element, derived_type: _Element) -> bool:
+def _is_directly_derived_from(base_type: _Element, derived_type: _Element) -> bool:
     derived_main_child = next(derived_type.children, None)
 
     if derived_main_child is None:
@@ -69,16 +69,16 @@ def _collect_derived_types(
 ) -> Generator[_Element, None, None]:
     all_simple_types = xsd_simple_type.root.findall(xsd.simpleType)
 
-    for complex_type in all_simple_types:
-        # A complex type is not a derivative of itself
-        if equal_names(xsd_simple_type, complex_type):
+    for simple_type in all_simple_types:
+        # A simple type is not a derivative of itself
+        if equal_names(xsd_simple_type, simple_type):
             continue
-        if not _is_derived_from(xsd_simple_type, complex_type):
+        if not _is_directly_derived_from(xsd_simple_type, simple_type):
             continue
 
-        yield complex_type
+        yield simple_type
 
-        derived_from_derived_type = _collect_derived_types(complex_type)
+        derived_from_derived_type = _collect_derived_types(simple_type)
         for type in derived_from_derived_type:
             yield type
 
@@ -93,7 +93,7 @@ def _generate_simple_type_or_derivative(xsd_simple_type: _Element) -> ph.Element
     created_element = generate_simple_type(random_simple_type)
 
     if random_simple_type != xsd_simple_type:
-        name = helpers._get_name_attribute(random_simple_type)
+        name = helpers.get_element_name(random_simple_type)
         created_element.attrib[xsi.type] = name
 
     return created_element
