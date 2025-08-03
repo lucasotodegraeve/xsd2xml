@@ -1,11 +1,12 @@
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 from xmlschema import XMLSchema
 import pytest
 from pytest import FixtureRequest
 
 import xsd2xml
-from tests.utils import serialize_tree
+from tests.utils import check_generated_tree_coverage, serialize_tree
 
 PREMIS = "tests/assets/premis.xsd.xml"
 premis_xsd = XMLSchema(PREMIS)
@@ -85,3 +86,8 @@ def test_object_valid(request: FixtureRequest, fuzzy_i: int):
 
 def test_premis_valid(request: FixtureRequest, fuzzy_i: int):
     assert is_valid(request, "premis", fuzzy_i)
+
+
+def test_premis_completeness():
+    document = xsd2xml.generate(PREMIS, "premis")
+    check_generated_tree_coverage(document, ET.parse(PREMIS))  # pyright: ignore[reportArgumentType]
