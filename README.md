@@ -2,7 +2,7 @@
 
 Use XSD to generate random XML documents.
 
-_Note: This is a hobby project. I'm not planning on developing this library any further._
+_Note: The library is lacking a lot of features. I'm not planning on developing this library any further._
 
 ## Usage
 
