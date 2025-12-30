@@ -1,0 +1,251 @@
+<premis:premis xmlns:premis="http://www.loc.gov/premis/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0">
+  <premis:object xmlID="uuid-6e1ad6a2-461b-4316-9226-7be9e12a7ec1" version="3.0" xsi:type="{http://www.loc.gov/premis/v3}representation">
+    <premis:objectIdentifier>
+      <premis:objectIdentifierType authority="YRSZOEhMPa">gXklPErYiX</premis:objectIdentifierType>
+      <premis:objectIdentifierValue>XNITFebkrL</premis:objectIdentifierValue>
+    </premis:objectIdentifier>
+    <premis:preservationLevel>
+      <premis:preservationLevelValue authority="yyAKkorpnN">wsiYucfBDI</premis:preservationLevelValue>
+      <premis:preservationLevelRole authorityURI="https://www.example.com/" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">QiHKjJGNDm</premis:preservationLevelRole>
+      <premis:preservationLevelRationale>NoHanyPPLH</premis:preservationLevelRationale>
+    </premis:preservationLevel>
+    <premis:relationship>
+      <premis:relationshipType authority="jKYyCQaBjM" xsi:type="{http://www.loc.gov/premis/v3}countryCode">mDbSSUZLWp</premis:relationshipType>
+      <premis:relationshipSubType authority="FBmEZGYVHX" valueURI="https://www.example.com/">dytsnqIlPc</premis:relationshipSubType>
+      <premis:relatedObjectIdentifier simpleLink="https://www.example.com/">
+        <premis:relatedObjectIdentifierType authorityURI="https://www.example.com/" valueURI="https://www.example.com/">dRSzIqIebf</premis:relatedObjectIdentifierType>
+        <premis:relatedObjectIdentifierValue>cePUynlJrB</premis:relatedObjectIdentifierValue>
+        <premis:relatedObjectSequence>21</premis:relatedObjectSequence>
+      </premis:relatedObjectIdentifier>
+      <premis:relatedEventIdentifier simpleLink="https://www.example.com/">
+        <premis:relatedEventIdentifierType authority="uqxFSrjXyd" authorityURI="https://www.example.com/">zxInoBhaSG</premis:relatedEventIdentifierType>
+        <premis:relatedEventIdentifierValue>JwinnpjZtZ</premis:relatedEventIdentifierValue>
+        <premis:relatedEventSequence>+11</premis:relatedEventSequence>
+      </premis:relatedEventIdentifier>
+      <premis:relatedEventIdentifier RelEventXmlID="uuid-75de3145-c39d-4ce0-a0f6-576773a90b49" simpleLink="https://www.example.com/">
+        <premis:relatedEventIdentifierType authority="ityHMvSdAY" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">djmoSgZRnt</premis:relatedEventIdentifierType>
+        <premis:relatedEventIdentifierValue>rgsSKeOetz</premis:relatedEventIdentifierValue>
+        <premis:relatedEventSequence>61</premis:relatedEventSequence>
+      </premis:relatedEventIdentifier>
+      <premis:relatedEnvironmentPurpose authority="BuwdYqwyvW">OrlpTMONqZ</premis:relatedEnvironmentPurpose>
+      <premis:relatedEnvironmentPurpose authority="WyhjKXuKNq" valueURI="https://www.example.com/">RBDiKFxOzS</premis:relatedEnvironmentPurpose>
+    </premis:relationship>
+    <premis:linkingEventIdentifier LinkEventXmlID="uuid-75de3145-c39d-4ce0-a0f6-576773a90b49" simpleLink="https://www.example.com/">
+      <premis:linkingEventIdentifierType authority="gtNcxNMseP" authorityURI="https://www.example.com/" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">VIMccSkBzN</premis:linkingEventIdentifierType>
+      <premis:linkingEventIdentifierValue>jTUlcPaDwi</premis:linkingEventIdentifierValue>
+    </premis:linkingEventIdentifier>
+    <premis:linkingEventIdentifier simpleLink="https://www.example.com/">
+      <premis:linkingEventIdentifierType authority="TzKbptyaIz" authorityURI="https://www.example.com/">PJFiVUOAFo</premis:linkingEventIdentifierType>
+      <premis:linkingEventIdentifierValue>bkNReebUIp</premis:linkingEventIdentifierValue>
+    </premis:linkingEventIdentifier>
+  </premis:object>
+  <premis:object xmlID="uuid-e7fb27e5-2e48-429d-a71f-4171df31a169" xsi:type="{http://www.loc.gov/premis/v3}file">
+    <premis:objectIdentifier simpleLink="https://www.example.com/">
+      <premis:objectIdentifierType authority="ERHTeyBern" authorityURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">RqEtbZHCJv</premis:objectIdentifierType>
+      <premis:objectIdentifierValue>BrwSuMNowm</premis:objectIdentifierValue>
+    </premis:objectIdentifier>
+    <premis:preservationLevel>
+      <premis:preservationLevelType valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">bujclILkba</premis:preservationLevelType>
+      <premis:preservationLevelValue authorityURI="https://www.example.com/" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">peSCeauGvl</premis:preservationLevelValue>
+      <premis:preservationLevelRationale>aLqwirujoP</premis:preservationLevelRationale>
+    </premis:preservationLevel>
+    <premis:preservationLevel>
+      <premis:preservationLevelValue authority="SPrffsmMwF" xsi:type="{http://www.loc.gov/premis/v3}countryCode">DAifyADcUb</premis:preservationLevelValue>
+      <premis:preservationLevelRationale>ygaIuKAkzn</premis:preservationLevelRationale>
+      <premis:preservationLevelDateAssigned>HHLHXQjWHI</premis:preservationLevelDateAssigned>
+    </premis:preservationLevel>
+    <premis:significantProperties>
+      <premis:significantPropertiesValue>quEbxfirDN</premis:significantPropertiesValue>
+    </premis:significantProperties>
+    <premis:significantProperties>
+      <premis:significantPropertiesType authority="KnelQUEAFh" authorityURI="https://www.example.com/" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">LVNbXNnVwN</premis:significantPropertiesType>
+      <premis:significantPropertiesValue>fkjVfNmeYZ</premis:significantPropertiesValue>
+      <premis:significantPropertiesExtension>
+        <YTiYMREClI />
+      </premis:significantPropertiesExtension>
+    </premis:significantProperties>
+    <premis:objectCharacteristics>
+      <premis:compositionLevel>+88</premis:compositionLevel>
+      <premis:format>
+        <premis:formatDesignation>
+          <premis:formatName valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">oiKgQhaaiL</premis:formatName>
+          <premis:formatVersion>ZJyYgiuLPH</premis:formatVersion>
+        </premis:formatDesignation>
+        <premis:formatNote>oqRYMeZsqC</premis:formatNote>
+        <premis:formatNote>xFXVrjwFWe</premis:formatNote>
+      </premis:format>
+      <premis:format>
+        <premis:formatRegistry>
+          <premis:formatRegistryName authorityURI="https://www.example.com/" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">udqxwmtayZ</premis:formatRegistryName>
+          <premis:formatRegistryKey authorityURI="https://www.example.com/" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">AvruhlmaXP</premis:formatRegistryKey>
+        </premis:formatRegistry>
+      </premis:format>
+      <premis:objectCharacteristicsExtension>
+        <lFGEmKMcSM />
+      </premis:objectCharacteristicsExtension>
+    </premis:objectCharacteristics>
+    <premis:objectCharacteristics>
+      <premis:fixity>
+        <premis:messageDigestAlgorithm valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">nMSPwOCvgY</premis:messageDigestAlgorithm>
+        <premis:messageDigest>AHCtUbCePA</premis:messageDigest>
+        <premis:messageDigestOriginator authorityURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">wOtaQmqfbL</premis:messageDigestOriginator>
+      </premis:fixity>
+      <premis:fixity>
+        <premis:messageDigestAlgorithm>yUZoUQqUzz</premis:messageDigestAlgorithm>
+        <premis:messageDigest>OQkKCvZTbW</premis:messageDigest>
+      </premis:fixity>
+      <premis:format>
+        <premis:formatRegistry>
+          <premis:formatRegistryName xsi:type="{http://www.loc.gov/premis/v3}countryCode">HrrNNCEiVp</premis:formatRegistryName>
+          <premis:formatRegistryKey valueURI="https://www.example.com/">kAMpZrvzjA</premis:formatRegistryKey>
+          <premis:formatRegistryRole authority="YZpuCjQKDt" xsi:type="{http://www.loc.gov/premis/v3}countryCode">KlWEIGZEcm</premis:formatRegistryRole>
+        </premis:formatRegistry>
+      </premis:format>
+      <premis:format>
+        <premis:formatDesignation>
+          <premis:formatName authorityURI="https://www.example.com/">OsRjsAJFiM</premis:formatName>
+        </premis:formatDesignation>
+        <premis:formatNote>MxGxlzsqcM</premis:formatNote>
+      </premis:format>
+      <premis:creatingApplication>
+        <premis:creatingApplicationExtension>
+          <LBWBuyCgxK />
+          <FtmrgcfMAq />
+        </premis:creatingApplicationExtension>
+      </premis:creatingApplication>
+      <premis:inhibitors>
+        <premis:inhibitorType authority="vZdYlnhUry" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">TOaJxAdanG</premis:inhibitorType>
+        <premis:inhibitorTarget authority="kHqoHWQSUT">QVeRqYiNXb</premis:inhibitorTarget>
+      </premis:inhibitors>
+      <premis:objectCharacteristicsExtension>
+        <SFlPjoJpSF />
+        <xeQBcFxsrg />
+      </premis:objectCharacteristicsExtension>
+      <premis:objectCharacteristicsExtension>
+        <IbTZPAVaGW />
+        <UxzPefpCdH />
+      </premis:objectCharacteristicsExtension>
+    </premis:objectCharacteristics>
+    <premis:storage>
+      <premis:contentLocation simpleLink="https://www.example.com/">
+        <premis:contentLocationType authority="VZwHhaeXYI" authorityURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">somxOkKBWx</premis:contentLocationType>
+        <premis:contentLocationValue>sNwhnOrhBi</premis:contentLocationValue>
+      </premis:contentLocation>
+      <premis:storageMedium authority="DKEFbVjPmt" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">hfqLWiDmVf</premis:storageMedium>
+    </premis:storage>
+    <premis:storage>
+      <premis:contentLocation simpleLink="https://www.example.com/">
+        <premis:contentLocationType authority="fARXEeuOVi" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">XMjkyfkuag</premis:contentLocationType>
+        <premis:contentLocationValue>FEmAUfuUsj</premis:contentLocationValue>
+      </premis:contentLocation>
+    </premis:storage>
+    <premis:relationship>
+      <premis:relationshipType>JtikwrFFKc</premis:relationshipType>
+      <premis:relationshipSubType authority="jPMGEyLnnM" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">dDdNheJluS</premis:relationshipSubType>
+      <premis:relatedObjectIdentifier RelObjectXmlID="uuid-75de3145-c39d-4ce0-a0f6-576773a90b49">
+        <premis:relatedObjectIdentifierType xsi:type="{http://www.loc.gov/premis/v3}countryCode">LQrUryAXTY</premis:relatedObjectIdentifierType>
+        <premis:relatedObjectIdentifierValue>UQoYuhTDlz</premis:relatedObjectIdentifierValue>
+      </premis:relatedObjectIdentifier>
+      <premis:relatedEnvironmentPurpose authorityURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">RrtfzXsxUT</premis:relatedEnvironmentPurpose>
+      <premis:relatedEnvironmentPurpose authority="DOpEGZaMeh" authorityURI="https://www.example.com/">DBfnJRWFQB</premis:relatedEnvironmentPurpose>
+    </premis:relationship>
+    <premis:relationship>
+      <premis:relationshipType authorityURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">ckIyrFdnOv</premis:relationshipType>
+      <premis:relationshipSubType authority="oZtEmDPvac">MBesHBFMoj</premis:relationshipSubType>
+      <premis:relatedObjectIdentifier>
+        <premis:relatedObjectIdentifierType authorityURI="https://www.example.com/" valueURI="https://www.example.com/">FxhArhPLWg</premis:relatedObjectIdentifierType>
+        <premis:relatedObjectIdentifierValue>hSwHhvJgxm</premis:relatedObjectIdentifierValue>
+        <premis:relatedObjectSequence>49</premis:relatedObjectSequence>
+      </premis:relatedObjectIdentifier>
+      <premis:relatedEventIdentifier RelEventXmlID="uuid-75de3145-c39d-4ce0-a0f6-576773a90b49">
+        <premis:relatedEventIdentifierType xsi:type="{http://www.loc.gov/premis/v3}countryCode">DapOuVnNJH</premis:relatedEventIdentifierType>
+        <premis:relatedEventIdentifierValue>LFlHTnNfKg</premis:relatedEventIdentifierValue>
+        <premis:relatedEventSequence>+72</premis:relatedEventSequence>
+      </premis:relatedEventIdentifier>
+      <premis:relatedEventIdentifier>
+        <premis:relatedEventIdentifierType authority="iwMYYQAxJx" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">DorsoHILPw</premis:relatedEventIdentifierType>
+        <premis:relatedEventIdentifierValue>AMoDgMWLSv</premis:relatedEventIdentifierValue>
+      </premis:relatedEventIdentifier>
+      <premis:relatedEnvironmentPurpose authority="kydKeZAAkO" authorityURI="https://www.example.com/" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">wwVmHyHTwO</premis:relatedEnvironmentPurpose>
+    </premis:relationship>
+    <premis:linkingEventIdentifier>
+      <premis:linkingEventIdentifierType valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">mhXMJBIrnD</premis:linkingEventIdentifierType>
+      <premis:linkingEventIdentifierValue>iXdffxZqcu</premis:linkingEventIdentifierValue>
+    </premis:linkingEventIdentifier>
+    <premis:linkingRightsStatementIdentifier>
+      <premis:linkingRightsStatementIdentifierType valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">LtUOlNKmOM</premis:linkingRightsStatementIdentifierType>
+      <premis:linkingRightsStatementIdentifierValue>eTiXpDpmhI</premis:linkingRightsStatementIdentifierValue>
+    </premis:linkingRightsStatementIdentifier>
+  </premis:object>
+  <premis:event>
+    <premis:eventIdentifier simpleLink="https://www.example.com/">
+      <premis:eventIdentifierType authority="TFAEMEsBDb" authorityURI="https://www.example.com/">xroPRPYkCl</premis:eventIdentifierType>
+      <premis:eventIdentifierValue>oIujGPODMg</premis:eventIdentifierValue>
+    </premis:eventIdentifier>
+    <premis:eventType authorityURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">YWQAsNVDcW</premis:eventType>
+    <premis:eventDateTime>CSosbzbeyO</premis:eventDateTime>
+    <premis:eventOutcomeInformation>
+      <premis:eventOutcomeDetail>
+        <premis:eventOutcomeDetailExtension>
+          <uyYDZpTFJs />
+          <hhLhwTTcuI />
+        </premis:eventOutcomeDetailExtension>
+        <premis:eventOutcomeDetailExtension>
+          <ORpuIrIjup />
+        </premis:eventOutcomeDetailExtension>
+      </premis:eventOutcomeDetail>
+      <premis:eventOutcomeDetail>
+        <premis:eventOutcomeDetailNote>WYhbOGEmIs</premis:eventOutcomeDetailNote>
+        <premis:eventOutcomeDetailExtension>
+          <CwcCrOcFxR />
+        </premis:eventOutcomeDetailExtension>
+        <premis:eventOutcomeDetailExtension>
+          <VVocaqBPQL />
+        </premis:eventOutcomeDetailExtension>
+      </premis:eventOutcomeDetail>
+    </premis:eventOutcomeInformation>
+    <premis:eventOutcomeInformation>
+      <premis:eventOutcomeDetail>
+        <premis:eventOutcomeDetailNote>QGGAWzkGOF</premis:eventOutcomeDetailNote>
+        <premis:eventOutcomeDetailExtension>
+          <TTYzNflfzS />
+        </premis:eventOutcomeDetailExtension>
+      </premis:eventOutcomeDetail>
+    </premis:eventOutcomeInformation>
+    <premis:linkingObjectIdentifier LinkObjectXmlID="uuid-6e1ad6a2-461b-4316-9226-7be9e12a7ec1">
+      <premis:linkingObjectIdentifierType authority="NEBmilscQD" authorityURI="https://www.example.com/" valueURI="https://www.example.com/">UbRKRUrNNt</premis:linkingObjectIdentifierType>
+      <premis:linkingObjectIdentifierValue>pjjoUvttnV</premis:linkingObjectIdentifierValue>
+    </premis:linkingObjectIdentifier>
+  </premis:event>
+  <premis:agent xmlID="uuid-75de3145-c39d-4ce0-a0f6-576773a90b49" version="3.0">
+    <premis:agentIdentifier simpleLink="https://www.example.com/">
+      <premis:agentIdentifierType authority="JIKRipJuge" authorityURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">zHXyFVJmSv</premis:agentIdentifierType>
+      <premis:agentIdentifierValue>bydBCXcEfi</premis:agentIdentifierValue>
+    </premis:agentIdentifier>
+    <premis:agentIdentifier>
+      <premis:agentIdentifierType authorityURI="https://www.example.com/">zzrxUjZPwx</premis:agentIdentifierType>
+      <premis:agentIdentifierValue>VaQFKsFPuB</premis:agentIdentifierValue>
+    </premis:agentIdentifier>
+    <premis:agentType authority="mZhpZVXsxD" authorityURI="https://www.example.com/">RAixJfYmFr</premis:agentType>
+    <premis:agentVersion>XXGMoiBRbv</premis:agentVersion>
+    <premis:agentNote>rUlLPFJfRu</premis:agentNote>
+    <premis:agentNote>rApFCJtCbW</premis:agentNote>
+    <premis:agentExtension>
+      <wcCzcufYRz />
+    </premis:agentExtension>
+    <premis:linkingRightsStatementIdentifier LinkPermissionStatementXmlID="uuid-6e1ad6a2-461b-4316-9226-7be9e12a7ec1" simpleLink="https://www.example.com/">
+      <premis:linkingRightsStatementIdentifierType authority="uUnQOZXwQh" valueURI="https://www.example.com/" xsi:type="{http://www.loc.gov/premis/v3}countryCode">QsrFpcLpCu</premis:linkingRightsStatementIdentifierType>
+      <premis:linkingRightsStatementIdentifierValue>hBQQBTUJRZ</premis:linkingRightsStatementIdentifierValue>
+    </premis:linkingRightsStatementIdentifier>
+    <premis:linkingRightsStatementIdentifier LinkPermissionStatementXmlID="uuid-75de3145-c39d-4ce0-a0f6-576773a90b49" simpleLink="https://www.example.com/">
+      <premis:linkingRightsStatementIdentifierType authority="xUnzZFNySU" valueURI="https://www.example.com/">QUhWUBNZyV</premis:linkingRightsStatementIdentifierType>
+      <premis:linkingRightsStatementIdentifierValue>tKjJOhAWoH</premis:linkingRightsStatementIdentifierValue>
+    </premis:linkingRightsStatementIdentifier>
+    <premis:linkingEnvironmentIdentifier>
+      <premis:linkingEnvironmentIdentifierType>yOKHxgOiJj</premis:linkingEnvironmentIdentifierType>
+      <premis:linkingEnvironmentIdentifierValue>cTEhRwmyiM</premis:linkingEnvironmentIdentifierValue>
+      <premis:linkingEnvironmentRole xsi:type="{http://www.loc.gov/premis/v3}countryCode">RCosJtsqqn</premis:linkingEnvironmentRole>
+      <premis:linkingEnvironmentRole authorityURI="https://www.example.com/">ABlUuBWuic</premis:linkingEnvironmentRole>
+    </premis:linkingEnvironmentIdentifier>
+  </premis:agent>
+</premis:premis>
