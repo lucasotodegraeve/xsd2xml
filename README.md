@@ -38,7 +38,7 @@ pytest
 ## Motivation
 When might this type of generation be useful? The initial idea was to validate the correctness of Python dataclasses for a [work project](https://github.com/viaacode/sipin-eark-models) using some sort of fuzzy testing.
 
-## Possible improvements
+## Improvements
 It is currently not clear which specific XML node functions expects. E.g. the following function expects an XML node with the tag `xsd:element`. However, this function could be called with any XML node without your type checker giving an error.
 
 ```py
